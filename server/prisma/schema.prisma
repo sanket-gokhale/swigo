@@ -1,0 +1,295 @@
+datasource db {
+  provider     = "mongodb"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ==========================================
+// 1. USER MODEL (Tenants, Owners, Kitchens, Admins)
+// ==========================================
+model User {
+  id                   String            @id @default(uuid()) @map("_id")
+  name                 String
+  email                String            @unique
+  password             String
+  role                 String            @default("user") // user | owner | tiffin | admin
+  phone                String?
+  city                 String?           @default("Pune")
+  bio                  String?           @default("")
+  businessName         String?           @default("")
+  kitchenName          String?           @default("")
+  rating               Float?            @default(4.5)
+  status               String?           @default("Active") // Active | Suspended | Pending
+  otp                  String?
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
+  createdAt            DateTime          @default(now())
+
+  // Relational references
+  properties               Property[]
+  bookingRequests          BookingRequest[]
+  tiffins                  Tiffin[]
+  tiffinInterests          TiffinInterest[]
+  collabRequestsAsOwner    CollabRequest[]   @relation("CollabOwner")
+  collabRequestsAsProvider CollabRequest[]   @relation("CollabProvider")
+  reviews                  Review[]
+  sentMessages             Message[]         @relation("SentMessages")
+  receivedMessages         Message[]         @relation("ReceivedMessages")
+  supportTickets           SupportTicket[]
+
+  @@map("users")
+}
+
+// ==========================================
+// 2. PROPERTY MODEL (PGs, Hostels, Flats)
+// ==========================================
+model Property {
+  id                  String           @id @default(uuid()) @map("_id")
+  title               String
+  description         String
+  location            String?
+  city                String
+  area                String
+  address             String
+  pincode             String
+  coordinates         Json?            // Stores GeoJSON { type: "Point", coordinates: [lat, lng] }
+  price               Float
+  type                String           @default("PG") // PG | Flat | Homestay | Hostel | Room
+  amenities           String[]         // Native PostgreSQL string array
+  contactNumber       String
+  ownerId             String
+  owner               User             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  images              String[]
+  averageRating       Float            @default(0)
+  reviewCount         Int              @default(0)
+  genderPreference    String           @default("Mixed") // Boys | Girls | Mixed
+  electricityBill     String           @default("Unpaid") // Paid | Unpaid
+  waterSupplyTime     String           @default("24/7")
+  waterBill           String           @default("Included")
+  maintenance         String           @default("Included") // Included | Not Included
+  hasFoodService      Boolean          @default(false)
+  linkedTiffinId      String?
+  linkedTiffin        Tiffin?          @relation("LinkedProperties", fields: [linkedTiffinId], references: [id], onDelete: SetNull)
+  foodCharges         Float?
+  foodType            String?          // Veg | Non-Veg | Both
+  status              String           @default("Approved") // Pending | Approved | Hidden
+  createdAt           DateTime         @default(now())
+
+  // Relational references
+  rooms               Room[]
+  bookingRequests     BookingRequest[]
+  collabRequests      CollabRequest[]
+  reviews             Review[]
+
+  @@index([city])
+  @@map("properties")
+}
+
+// ==========================================
+// 3. ROOM MODEL (Individual room inventory)
+// ==========================================
+model Room {
+  id           String    @id @default(uuid()) @map("_id")
+  roomNo       String
+  propertyId   String
+  property     Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  type         String    @default("Single") // Single | Double | Triple | Shared
+  price        Float
+  availability String    @default("Available") // Available | Occupied | Maintenance
+  status       String    @default("Active") // Active | Inactive
+  createdAt    DateTime  @default(now())
+
+  @@map("rooms")
+}
+
+// ==========================================
+// 4. BOOKING REQUEST MODEL (Tenant reservations)
+// ==========================================
+model BookingRequest {
+  id              String    @id @default(uuid()) @map("_id")
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  propertyId      String
+  property        Property  @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  startDate       DateTime
+  endDate         DateTime
+  visitTime       String?
+  message         String?
+  rejectionReason String?
+  status          String    @default("pending") // pending | approved | confirmed | accepted | rejected
+  createdAt       DateTime  @default(now())
+
+  @@map("booking_requests")
+}
+
+// ==========================================
+// 5. TIFFIN MODEL (Home kitchen services)
+// ==========================================
+model Tiffin {
+  id            String           @id @default(uuid()) @map("_id")
+  name          String
+  description   String
+  city          String
+  area          String
+  coordinates   Json?            // GeoJSON coordinates object
+  price         Float
+  providerId    String
+  provider      User             @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  images        String[]
+  mealPlans     Json?            // Array of objects [{ name, price, description }]
+  deliveryAreas String[]
+  menu          Json?            // Weekly schedule object { monday, tuesday, ... }
+  isStandalone  Boolean          @default(true)
+  type          String           @default("independent") // owner-collab | independent
+  createdAt     DateTime         @default(now())
+
+  // Relational references
+  linkedProperties Property[]    @relation("LinkedProperties")
+  tiffinInterests  TiffinInterest[]
+  collabRequests   CollabRequest[]
+
+  @@index([city])
+  @@map("tiffins")
+}
+
+// ==========================================
+// 6. TIFFIN INTEREST MODEL (Customer subscriptions)
+// ==========================================
+model TiffinInterest {
+  id           String   @id @default(uuid()) @map("_id")
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tiffinId     String
+  tiffin       Tiffin   @relation(fields: [tiffinId], references: [id], onDelete: Cascade)
+  message      String?
+  status       String   @default("pending") // pending | contacted | completed
+  requestType  String   @default("independent") // property-linked | independent
+  planSelected String?
+  createdAt    DateTime @default(now())
+
+  @@map("tiffin_interests")
+}
+
+// ==========================================
+// 7. COLLAB REQUEST MODEL (PG Owner <-> Kitchen partner)
+// ==========================================
+model CollabRequest {
+  id          String   @id @default(uuid()) @map("_id")
+  tiffinId    String
+  tiffin      Tiffin   @relation(fields: [tiffinId], references: [id], onDelete: Cascade)
+  propertyId  String
+  property    Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  ownerId     String
+  owner       User     @relation("CollabOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  providerId  String
+  provider    User     @relation("CollabProvider", fields: [providerId], references: [id], onDelete: Cascade)
+  status      String   @default("pending") // pending | accepted | rejected | cancelled
+  initiatedBy String   // owner | provider
+  message     String?
+  createdAt   DateTime @default(now())
+
+  @@map("collab_requests")
+}
+
+// ==========================================
+// 8. REVIEW MODEL (Property ratings & comments)
+// ==========================================
+model Review {
+  id         String   @id @default(uuid()) @map("_id")
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  propertyId String
+  property   Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  rating     Float
+  comment    String
+  createdAt  DateTime @default(now())
+
+  @@map("reviews")
+}
+
+// ==========================================
+// 9. MESSAGE MODEL (Direct chat & negotiation)
+// ==========================================
+model Message {
+  id             String   @id @default(uuid()) @map("_id")
+  senderId       String
+  sender         User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId     String
+  receiver       User     @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+  content        String
+  messageType    String   @default("text") // text | meal_details | pricing
+  mealDetails    Json?    // Structured object { name, description, items: [] }
+  pricingDetails Json?    // Structured object { planName, price, billingCycle }
+  createdAt      DateTime @default(now())
+
+  @@map("messages")
+}
+
+// ==========================================
+// 10. NOTIFICATION MODEL (System & targeted alerts)
+// ==========================================
+model Notification {
+  id          String   @id @default(uuid()) @map("_id")
+  type        String   // announcement | maintenance | update | warning
+  targetGroup String   // all | owners | users | tiffin
+  title       String
+  message     String
+  createdAt   DateTime @default(now())
+
+  @@map("notifications")
+}
+
+// ==========================================
+// 11. SUPPORT TICKET MODEL (User assistance & reports)
+// ==========================================
+model SupportTicket {
+  id          String   @id @default(uuid()) @map("_id")
+  title       String
+  description String
+  senderId    String
+  sender      User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  category    String   // user | owner | kitchen
+  status      String   @default("open") // open | resolved
+  createdAt   DateTime @default(now())
+
+  @@map("support_tickets")
+}
+
+// ==========================================
+// 12. SYSTEM SETTING MODEL (Platform configuration)
+// ==========================================
+model SystemSetting {
+  id                      String   @id @default(uuid()) @map("_id")
+  platformName            String   @default("Swigo")
+  logoUrl                 String   @default("/logo.png")
+  theme                   String   @default("light") // light | dark
+  emailHost               String   @default("smtp.gmail.com")
+  jwtExpiration           String   @default("7d")
+  cloudStorageBucket      String   @default("swigo-media-bucket")
+  locationDefaultCity     String   @default("Pune")
+  userPortalMaintenance   Boolean  @default(false)
+  ownerPortalMaintenance  Boolean  @default(false)
+  tiffinPortalMaintenance Boolean  @default(false)
+  adminPortalMaintenance  Boolean  @default(false)
+  createdAt               DateTime @default(now())
+
+  @@map("system_settings")
+}
+
+// ==========================================
+// 13. OTP MODEL (Security verification keys)
+// ==========================================
+model Otp {
+  id        String   @id @default(uuid()) @map("_id")
+  email     String
+  otp       String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@index([email])
+  @@map("otps")
+}
