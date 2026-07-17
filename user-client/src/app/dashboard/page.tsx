@@ -24,19 +24,10 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setMounted(true);
-    const checkUser = () => {
-      const u = getUser();
-      if (!u) {
-        router.push('/login');
-      } else {
-        setUser(u);
-      }
-    };
-    checkUser();
-  }, [router]);
+    setUser(getUser());
+  }, []);
 
   const loadData = async (lat?: number, lng?: number) => {
-    if (!getUser()) return;
     try {
       const allProps = await fetchProperties();
       setProperties(allProps);
@@ -99,7 +90,7 @@ export default function DashboardPage() {
     { name: 'Guwahati', lat: 26.1158, lng: 91.7086 }
   ];
 
-  if (!mounted || !user) {
+  if (!mounted) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="h-12 w-12 border-4 border-primary border-t-transparent animate-spin rounded-full" />
