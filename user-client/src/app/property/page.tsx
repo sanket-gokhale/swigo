@@ -1,6 +1,8 @@
 import { fetchProperties } from '@/services/property.service';
 import PropertyCard from '@/components/property/PropertyCard';
 
+export const dynamic = 'force-dynamic';
+
 export default async function PropertiesPage() {
   const properties = await fetchProperties();
 
