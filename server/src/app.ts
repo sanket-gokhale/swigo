@@ -29,6 +29,11 @@ app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Health check
+app.get('/', (req, res) => {
+  res.status(200).json({ status: 'ok', message: 'Swigo API is running' });
+});
+
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
