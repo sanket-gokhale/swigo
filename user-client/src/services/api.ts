@@ -4,8 +4,19 @@ const getApiBase = () => {
   
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
-    // If accessing via local network IP (e.g. 192.168.x.x), use it for API requests
-    if (hostname && hostname !== 'localhost' && hostname !== '127.0.0.1' && !hostname.endsWith('.vercel.app') && !hostname.endsWith('.onrender.com')) {
+    
+    // Check if hostname is local
+    const isLocal = hostname === 'localhost' || 
+                    hostname === '127.0.0.1' || 
+                    hostname.startsWith('192.168.') || 
+                    hostname.startsWith('10.') || 
+                    hostname.startsWith('172.');
+                    
+    if (!isLocal) {
+      // If it's a deployed production app, route to the Render backend
+      return 'https://swigo.onrender.com/api';
+    } else if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+      // If it's a local network IP, route to the local backend using the same IP
       return `http://${hostname}:5000/api`;
     }
   }
