@@ -38,20 +38,24 @@ export async function getProfile() {
   const token = getToken();
   if (!token) return null;
 
-  const res = await fetch(`${API_BASE}/user/profile`, {
-    headers: { 
-      'Authorization': `Bearer ${token}` 
-    },
-  });
+  try {
+    const res = await fetch(`${API_BASE}/user/profile`, {
+      headers: { 
+        'Authorization': `Bearer ${token}` 
+      },
+    });
 
-  if (res.status === 401) {
-    logout();
-    return null;
-  }
-  const result = await res.json();
-  if (res.ok && result.data) {
-    localStorage.setItem('user', JSON.stringify(result.data));
-    return result.data;
+    if (res.status === 401) {
+      logout();
+      return null;
+    }
+    const result = await res.json();
+    if (res.ok && result.data) {
+      localStorage.setItem('user', JSON.stringify(result.data));
+      return result.data;
+    }
+  } catch (error) {
+    console.error('Failed to get profile from API:', error);
   }
   return null;
 }

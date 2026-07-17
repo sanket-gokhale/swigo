@@ -53,7 +53,17 @@ const PropertySchema = new Schema({
   foodType: { type: String, default: null }, // Veg | Non-Veg | Both
   status: { type: String, default: 'Approved' }, // Pending | Approved | Hidden
   createdAt: { type: Date, default: Date.now }
-}, { versionKey: false });
+}, { 
+  versionKey: false,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
+});
+
+PropertySchema.virtual('rooms', {
+  ref: 'Room',
+  localField: '_id',
+  foreignField: 'propertyId'
+});
 
 // 3. Room Schema
 const RoomSchema = new Schema({

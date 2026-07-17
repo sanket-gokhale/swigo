@@ -21,7 +21,21 @@ export default function SearchPage() {
     const loadInitialData = async () => {
       try {
         const cityData = await (await import('@/services/property.service')).fetchCities();
-        setCities(cityData);
+        const preferredOrder = [
+          'Nagpur', 'Mumbai', 'Delhi', 'Bengaluru', 'Hyderabad', 'Chennai', 'Pune', 'Kolkata', 'Ahmedabad',
+          'Nashik', 'Aurangabad (Chhatrapati Sambhajinagar)', 'Indore', 'Bhopal', 'Jaipur', 'Lucknow', 'Kanpur',
+          'Surat', 'Vadodara', 'Rajkot', 'Coimbatore', 'Kochi', 'Visakhapatnam', 'Vijayawada', 'Mysuru',
+          'Chandigarh', 'Bhubaneswar', 'Patna', 'Guwahati'
+        ];
+        const sortedCities = [...cityData].sort((a, b) => {
+          const indexA = preferredOrder.indexOf(a);
+          const indexB = preferredOrder.indexOf(b);
+          if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+          if (indexA !== -1) return -1;
+          if (indexB !== -1) return 1;
+          return a.localeCompare(b);
+        });
+        setCities(sortedCities);
         await handleFetch();
       } catch (err) {
         console.error('Failed to load initial data', err);

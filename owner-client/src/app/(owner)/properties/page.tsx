@@ -54,51 +54,110 @@ export default function MyPropertiesPage() {
         </div>
       ) : (
         <div className="grid gap-6">
-          {properties.map((property) => (
-            <div key={property._id} className="group relative flex flex-col md:flex-row gap-6 rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900">
-              {/* Placeholder for property image */}
-              <div className="h-32 w-full md:w-48 rounded-2xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden flex items-center justify-center text-3xl">
-                🏠
-              </div>
-              
-              <div className="flex-1 flex flex-col justify-center">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">{property.title}</h3>
-                    <p className="text-sm text-zinc-500">{property.location} • {property.type}</p>
-                    <p className="text-xs font-medium text-primary mt-1 flex items-center gap-1">
-                      <span>📞</span> {property.contactNumber}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="inline-flex items-center rounded-full bg-zinc-100 px-3 py-1 text-xs font-bold text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
-                      ⭐ {property.rating || 'New'}
-                    </span>
-                  </div>
+          {properties.map((property) => {
+            const totalRooms = property.rooms ? property.rooms.length : 0;
+            const availableRooms = property.rooms ? property.rooms.filter((r: any) => r.availability === 'Available').length : 0;
+
+            let statusBadge = null;
+            if (totalRooms === 0) {
+              statusBadge = <span className="inline-flex items-center rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-bold text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400">No rooms listed</span>;
+            } else if (availableRooms === 0) {
+              statusBadge = <span className="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-bold text-red-700 dark:bg-red-950/30 dark:text-red-400 animate-pulse">Fully Booked</span>;
+            } else {
+              statusBadge = <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-bold text-green-700 dark:bg-green-950/30 dark:text-green-400">Available</span>;
+            }
+
+            return (
+              <div key={property._id} className="group relative flex flex-col md:flex-row gap-6 rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm transition-all hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900">
+                {/* Placeholder for property image */}
+                <div className="h-32 w-full md:w-48 rounded-2xl bg-zinc-100 dark:bg-zinc-800 overflow-hidden flex items-center justify-center text-3xl">
+                  🏠
                 </div>
                 
-                <div className="mt-6 flex items-center gap-4">
-                  <Link 
-                    href={`/edit-property/${property._id}`}
-                    className="text-sm font-bold text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-                  >
-                    Edit Details
-                  </Link>
-                  <button 
-                    onClick={() => handleDelete(property._id)}
-                    className="text-sm font-bold text-red-500 hover:text-red-600 cursor-pointer"
-                  >
-                    Delete
-                  </button>
+                <div className="flex-1 flex flex-col justify-center">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">{property.title}</h3>
+                      <p className="text-sm text-zinc-500">{property.location} • {property.type}</p>
+                      <p className="text-xs font-medium text-primary mt-1 flex items-center gap-1">
+                        <span>📞</span> {property.contactNumber}
+                      </p>
+                      <div className="flex items-center gap-2 mt-2">
+                        {statusBadge}
+                        {totalRooms > 0 && (
+                          <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                            {availableRooms} of {totalRooms} rooms available
+                          </span>
+                        )}
+                      </div>
+
+                      {totalRooms > 0 && (() => {
+                        const singleTotal = property.rooms ? property.rooms.filter((r: any) => r.type === 'Single').length : 0;
+                        const singleAvail = property.rooms ? property.rooms.filter((r: any) => r.type === 'Single' && r.availability === 'Available').length : 0;
+                        const singleBooked = property.rooms ? property.rooms.filter((r: any) => r.type === 'Single' && r.availability === 'Occupied').length : 0;
+
+                        const doubleTotal = property.rooms ? property.rooms.filter((r: any) => r.type === 'Double').length : 0;
+                        const doubleAvail = property.rooms ? property.rooms.filter((r: any) => r.type === 'Double' && r.availability === 'Available').length : 0;
+                        const doubleBooked = property.rooms ? property.rooms.filter((r: any) => r.type === 'Double' && r.availability === 'Occupied').length : 0;
+
+                        const multiTotal = property.rooms ? property.rooms.filter((r: any) => r.type === 'Triple' || r.type === 'Shared').length : 0;
+                        const multiAvail = property.rooms ? property.rooms.filter((r: any) => (r.type === 'Triple' || r.type === 'Shared') && r.availability === 'Available').length : 0;
+                        const multiBooked = property.rooms ? property.rooms.filter((r: any) => (r.type === 'Triple' || r.type === 'Shared') && r.availability === 'Occupied').length : 0;
+
+                        return (
+                          <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 border-t border-zinc-100 dark:border-zinc-800 pt-3 max-w-xl">
+                            <div className="p-2 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 text-[10px] font-medium text-zinc-650 dark:text-zinc-400">
+                              <span className="font-bold text-zinc-800 dark:text-zinc-200 block mb-0.5">👤 Single Room</span>
+                              Total: {singleTotal} | Avail: <span className="text-green-600 font-bold">{singleAvail}</span> | Booked: <span className="text-red-500 font-bold">{singleBooked}</span>
+                            </div>
+                            <div className="p-2 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 text-[10px] font-medium text-zinc-650 dark:text-zinc-400">
+                              <span className="font-bold text-zinc-800 dark:text-zinc-200 block mb-0.5">👥 Double Sharing</span>
+                              Total: {doubleTotal} | Avail: <span className="text-green-600 font-bold">{doubleAvail}</span> | Booked: <span className="text-red-500 font-bold">{doubleBooked}</span>
+                            </div>
+                            <div className="p-2 rounded-xl bg-zinc-50 dark:bg-zinc-800/50 text-[10px] font-medium text-zinc-650 dark:text-zinc-400">
+                              <span className="font-bold text-zinc-800 dark:text-zinc-200 block mb-0.5">🏢 Multi-Share</span>
+                              Total: {multiTotal} | Avail: <span className="text-green-600 font-bold">{multiAvail}</span> | Booked: <span className="text-red-500 font-bold">{multiBooked}</span>
+                            </div>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <span className="inline-flex items-center rounded-full bg-zinc-100 px-3 py-1 text-xs font-bold text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+                        ⭐ {property.rating || 'New'}
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6 flex items-center gap-4">
+                    <Link 
+                      href={`/edit-property/${property._id}`}
+                      className="text-sm font-bold text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+                    >
+                      Edit Details
+                    </Link>
+                    <Link 
+                      href={`/properties/${property._id}/rooms`}
+                      className="text-sm font-bold text-primary hover:underline"
+                    >
+                      🚪 Manage Rooms
+                    </Link>
+                    <button 
+                      onClick={() => handleDelete(property._id)}
+                      className="text-sm font-bold text-red-500 hover:text-red-600 cursor-pointer"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-start md:items-end justify-center border-t border-zinc-100 pt-4 md:border-t-0 md:pt-0">
+                  <p className="text-2xl font-black text-zinc-900 dark:text-zinc-50">₹{property.price}</p>
+                  <p className="text-xs text-zinc-500">per month</p>
                 </div>
               </div>
-
-              <div className="flex flex-col items-start md:items-end justify-center border-t border-zinc-100 pt-4 md:border-t-0 md:pt-0">
-                <p className="text-2xl font-black text-zinc-900 dark:text-zinc-50">₹{property.price}</p>
-                <p className="text-xs text-zinc-500">per month</p>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

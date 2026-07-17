@@ -35,7 +35,8 @@ export const getAllProperties = async (filters: any = {}) => {
       owner: {
         select: { id: true, name: true, email: true, phone: true }
       },
-      linkedTiffin: true
+      linkedTiffin: true,
+      rooms: true
     },
     orderBy: { createdAt: 'desc' }
   });
@@ -59,6 +60,7 @@ export const getAllProperties = async (filters: any = {}) => {
     ...p,
     _id: p.id,
     owner: p.owner || p.ownerId,
+    rooms: p.rooms || [],
     linkedTiffinService: p.linkedTiffin || p.linkedTiffinId
   }));
 };
@@ -113,10 +115,10 @@ export const createProperty = async (data: any) => {
 export const getOwnerProperties = async (ownerId: string) => {
   const properties = await prisma.property.findMany({
     where: { ownerId },
-    include: { owner: true, linkedTiffin: true },
+    include: { owner: true, linkedTiffin: true, rooms: true },
     orderBy: { createdAt: 'desc' }
   });
-  return properties.map(p => ({ ...p, _id: p.id, owner: p.owner || p.ownerId, linkedTiffinService: p.linkedTiffin || p.linkedTiffinId }));
+  return properties.map(p => ({ ...p, _id: p.id, owner: p.owner || p.ownerId, rooms: p.rooms || [], linkedTiffinService: p.linkedTiffin || p.linkedTiffinId }));
 };
 
 export const getPropertyById = async (id: string) => {
@@ -197,10 +199,35 @@ export const getOwnerStats = async (ownerId: string) => {
     where: { propertyId: { in: propertyIds }, status: 'pending' }
   });
 
+  // Calculate room statistics for owner
+  const rooms = await prisma.room.findMany({
+    where: { propertyId: { in: propertyIds } }
+  });
+
+  const singleTotal = rooms.filter(r => r.type === 'Single').length;
+  const singleAvail = rooms.filter(r => r.type === 'Single' && r.availability === 'Available').length;
+  const singleBooked = rooms.filter(r => r.type === 'Single' && r.availability === 'Occupied').length;
+
+  const doubleTotal = rooms.filter(r => r.type === 'Double').length;
+  const doubleAvail = rooms.filter(r => r.type === 'Double' && r.availability === 'Available').length;
+  const doubleBooked = rooms.filter(r => r.type === 'Double' && r.availability === 'Occupied').length;
+
+  const multiTotal = rooms.filter(r => r.type === 'Triple' || r.type === 'Shared').length;
+  const multiAvail = rooms.filter(r => (r.type === 'Triple' || r.type === 'Shared') && r.availability === 'Available').length;
+  const multiBooked = rooms.filter(r => (r.type === 'Triple' || r.type === 'Shared') && r.availability === 'Occupied').length;
+
   return {
     totalProperties,
     totalRequests,
     pendingRequests,
-    averageRating: Number(averageRating)
+    averageRating: Number(averageRating),
+    totalRooms: rooms.length,
+    availableRooms: rooms.filter(r => r.availability === 'Available').length,
+    occupiedRooms: rooms.filter(r => r.availability === 'Occupied').length,
+    breakdown: {
+      single: { total: singleTotal, available: singleAvail, booked: singleBooked },
+      double: { total: doubleTotal, available: doubleAvail, booked: doubleBooked },
+      multi: { total: multiTotal, available: multiAvail, booked: multiBooked }
+    }
   };
 };

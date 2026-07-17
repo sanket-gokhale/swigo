@@ -124,6 +124,32 @@ export default function TiffinProfilePage() {
     }
   };
 
+  const getCoordinatesFromAddress = async () => {
+    if (!formData.city || !formData.area) {
+      toast.error('Please enter City and Area first.');
+      return;
+    }
+    setSaving(true);
+    try {
+      const query = encodeURIComponent(`${formData.area}, ${formData.city}`);
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`);
+      const data = await res.json();
+      if (data && data.length > 0) {
+        setCoords({
+          lat: parseFloat(data[0].lat),
+          lng: parseFloat(data[0].lon)
+        });
+        toast.success('Location coordinates resolved from address!');
+      } else {
+        toast.error('Could not find location coordinates for this address.');
+      }
+    } catch (err) {
+      toast.error('Error resolving coordinates from address.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const addMealPlan = () => {
     setMealPlans([...mealPlans, { name: '', price: '', description: '' }]);
   };
@@ -241,13 +267,22 @@ export default function TiffinProfilePage() {
                       : 'Location not pinned yet'}
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={getLocation}
-                  className="w-full py-4 rounded-2xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-primary/5 h-[56px]"
-                >
-                  📍 Pin Exact Location
-                </button>
+                <div className="grid grid-cols-2 gap-4">
+                  <button
+                    type="button"
+                    onClick={getLocation}
+                    className="w-full h-[56px] rounded-2xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2"
+                  >
+                    📍 GPS Location
+                  </button>
+                  <button
+                    type="button"
+                    onClick={getCoordinatesFromAddress}
+                    className="w-full h-[56px] rounded-2xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-primary/5"
+                  >
+                    🔍 Address Location
+                  </button>
+                </div>
               </div>
               <div className="col-span-2">
                 <label className="block text-sm font-semibold text-slate-600 mb-2">Provider Type</label>

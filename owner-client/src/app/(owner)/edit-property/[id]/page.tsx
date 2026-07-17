@@ -42,6 +42,32 @@ export default function EditPropertyPage() {
     }
   };
 
+  const getCoordinatesFromAddress = async () => {
+    if (!formData.city || !formData.area) {
+      toast.error('Please enter City and Area first.');
+      return;
+    }
+    setSaving(true);
+    try {
+      const query = encodeURIComponent(`${formData.area}, ${formData.city}`);
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`);
+      const data = await res.json();
+      if (data && data.length > 0) {
+        setCoords({
+          lat: parseFloat(data[0].lat),
+          lng: parseFloat(data[0].lon)
+        });
+        toast.success('Location coordinates resolved from address!');
+      } else {
+        toast.error('Could not find location coordinates for this address.');
+      }
+    } catch (err) {
+      toast.error('Error resolving coordinates from address.');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   useEffect(() => {
     const fetchProperty = async () => {
       try {
@@ -273,13 +299,30 @@ export default function EditPropertyPage() {
                 className="mt-1 block w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-zinc-900 focus:border-primary focus:ring-primary dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-50 sm:text-sm"
               />
             </div>
-            <button
-              type="button"
-              onClick={getLocation}
-              className="h-[46px] rounded-xl bg-primary/5 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest hover:bg-primary/10 transition-all flex items-center justify-center gap-2"
-            >
-              📍 Pin Exact Location
-            </button>
+            <div className="space-y-2">
+              <label className="block text-[10px] font-black uppercase tracking-wider text-zinc-400">Set Coordinates Option</label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={getLocation}
+                  className="h-[46px] rounded-xl bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-[10px] font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-1.5 dark:bg-zinc-800 dark:hover:bg-zinc-700 dark:text-zinc-200"
+                >
+                  📍 GPS Location
+                </button>
+                <button
+                  type="button"
+                  onClick={getCoordinatesFromAddress}
+                  className="h-[46px] rounded-xl bg-primary/5 border border-primary/20 text-primary text-[10px] font-bold uppercase tracking-widest hover:bg-primary/10 transition-all flex items-center justify-center gap-1.5"
+                >
+                  🔍 Address Location
+                </button>
+              </div>
+              { (coords.lat !== 0 || coords.lng !== 0) && (
+                <p className="text-[10px] font-medium text-emerald-500 mt-1">
+                  ✓ Coordinates pinned: {coords.lat.toFixed(4)}, {coords.lng.toFixed(4)}
+                </p>
+              )}
+            </div>
           </div>
 
           <div>

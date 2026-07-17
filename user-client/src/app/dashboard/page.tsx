@@ -13,13 +13,14 @@ import { getJSON } from '@/services/api';
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { location, loading: locLoading, requestLocation } = useLocation();
+  const { location, loading: locLoading, requestLocation, setManualLocation } = useLocation();
   const [properties, setProperties] = useState<Property[]>([]);
   const [nearbyProperties, setNearbyProperties] = useState<Property[]>([]);
   const [nearbyTiffins, setNearbyTiffins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -66,6 +67,37 @@ export default function DashboardPage() {
     { name: 'Tiffins', icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z"/><path d="M3 9V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4"/><path d="M12 12v6"/><path d="M8 12v3"/><path d="M16 12v3"/></svg> },
   ];
 
+  const popularCities = [
+    { name: 'Nagpur', lat: 21.1458, lng: 79.0882 },
+    { name: 'Mumbai', lat: 19.0760, lng: 72.8777 },
+    { name: 'Delhi', lat: 28.6139, lng: 77.2090 },
+    { name: 'Bengaluru', lat: 12.9716, lng: 77.5946 },
+    { name: 'Hyderabad', lat: 17.3850, lng: 78.4867 },
+    { name: 'Chennai', lat: 13.0827, lng: 80.2707 },
+    { name: 'Pune', lat: 18.5204, lng: 73.8567 },
+    { name: 'Kolkata', lat: 22.5726, lng: 88.3639 },
+    { name: 'Ahmedabad', lat: 23.0225, lng: 72.5714 },
+    { name: 'Nashik', lat: 19.9975, lng: 73.7898 },
+    { name: 'Aurangabad (Chhatrapati Sambhajinagar)', lat: 19.8762, lng: 75.3433 },
+    { name: 'Indore', lat: 22.7196, lng: 75.8577 },
+    { name: 'Bhopal', lat: 23.2599, lng: 77.4126 },
+    { name: 'Jaipur', lat: 26.9124, lng: 75.7873 },
+    { name: 'Lucknow', lat: 26.8467, lng: 80.9462 },
+    { name: 'Kanpur', lat: 26.4499, lng: 80.3319 },
+    { name: 'Surat', lat: 21.1702, lng: 72.8311 },
+    { name: 'Vadodara', lat: 22.3072, lng: 73.1812 },
+    { name: 'Rajkot', lat: 22.3039, lng: 70.8022 },
+    { name: 'Coimbatore', lat: 11.0168, lng: 76.9558 },
+    { name: 'Kochi', lat: 9.9312, lng: 76.2673 },
+    { name: 'Visakhapatnam', lat: 17.6868, lng: 83.2185 },
+    { name: 'Vijayawada', lat: 16.5062, lng: 80.6480 },
+    { name: 'Mysuru', lat: 12.2958, lng: 76.6394 },
+    { name: 'Chandigarh', lat: 30.7333, lng: 76.7794 },
+    { name: 'Bhubaneswar', lat: 20.2961, lng: 85.8245 },
+    { name: 'Patna', lat: 25.5941, lng: 85.1376 },
+    { name: 'Guwahati', lat: 26.1158, lng: 91.7086 }
+  ];
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar />
@@ -107,17 +139,51 @@ export default function DashboardPage() {
                   />
                 </div>
                 <div className="w-px h-10 bg-slate-200 self-center hidden md:block" />
-                <button 
-                  onClick={requestLocation}
-                  className="flex items-center gap-3 px-6 py-4 text-sm font-bold text-slate-500 hover:text-primary transition-colors"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                  {mounted && location?.address ? (
-                    <span className="truncate max-w-[120px] text-primary">{location.address.split(',')[0]}</span>
-                  ) : (
-                    'Near me'
+                
+                {/* Location Selection Dropdown */}
+                <div className="relative flex items-center">
+                  <button 
+                    onClick={() => setShowLocationDropdown(!showLocationDropdown)}
+                    type="button"
+                    className="flex items-center gap-3 px-6 py-4 text-sm font-bold text-slate-500 hover:text-primary transition-colors w-full md:w-auto"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                    {mounted && location?.address ? (
+                      <span className="truncate max-w-[120px] text-primary">{location.address.split(',')[0]}</span>
+                    ) : (
+                      'Location'
+                    )}
+                    <span className="text-[10px]">▼</span>
+                  </button>
+
+                  {showLocationDropdown && (
+                    <div className="absolute right-0 top-full mt-2 w-48 rounded-2xl bg-white border border-slate-100 shadow-xl z-50 p-2 text-left">
+                      <button
+                        onClick={() => {
+                          requestLocation();
+                          setShowLocationDropdown(false);
+                        }}
+                        className="w-full flex items-center gap-2 rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors"
+                      >
+                        📍 GPS / Current Location
+                      </button>
+                      <div className="h-px bg-slate-100 my-1" />
+                      {popularCities.map((city) => (
+                        <button
+                          key={city.name}
+                          onClick={() => {
+                            setManualLocation(city.name, city.lat, city.lng);
+                            setShowLocationDropdown(false);
+                          }}
+                          className="w-full rounded-xl px-3 py-2.5 text-xs font-semibold text-slate-600 hover:bg-primary/5 hover:text-primary transition-colors text-left"
+                        >
+                          🌇 {city.name}
+                        </button>
+                      ))}
+                    </div>
                   )}
-                </button>
+                </div>
+                
                 <button className="btn-primary px-10">
                   Search
                 </button>

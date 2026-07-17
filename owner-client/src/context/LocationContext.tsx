@@ -14,14 +14,28 @@ interface LocationContextType {
   loading: boolean;
   error: string | null;
   requestLocation: () => void;
+  setManualLocation: (address: string, lat: number, lng: number) => void;
 }
 
 const LocationContext = createContext<LocationContextType | undefined>(undefined);
 
 export const LocationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [location, setLocation] = useState<LocationData | null>(null);
+  const [location, setLocation] = useState<LocationData | null>({
+    latitude: 21.1458,
+    longitude: 79.0882,
+    address: 'Nagpur, Maharashtra'
+  });
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const setManualLocation = (address: string, lat: number, lng: number) => {
+    setLoading(true);
+    const data = { latitude: lat, longitude: lng, address };
+    setLocation(data);
+    localStorage.setItem('user_location', JSON.stringify(data));
+    setLoading(false);
+    toast.success(`Location set to: ${address}`, { id: 'location-toast' });
+  };
 
   const saveLocation = async (lat: number, lng: number) => {
     setLoading(true);
@@ -107,7 +121,7 @@ export const LocationProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   }, []);
 
   return (
-    <LocationContext.Provider value={{ location, loading, error, requestLocation }}>
+    <LocationContext.Provider value={{ location, loading, error, requestLocation, setManualLocation }}>
       {children}
     </LocationContext.Provider>
   );

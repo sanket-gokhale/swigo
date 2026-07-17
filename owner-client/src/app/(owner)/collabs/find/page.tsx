@@ -245,7 +245,7 @@ export default function FindProvidersPage() {
           <span className="text-2xl">🔍</span>
           <input 
             type="text" 
-            placeholder="Search by city (e.g. Pune, Noida)..." 
+            placeholder="Search by city (e.g. Nagpur, Mumbai)..." 
             className="w-full bg-transparent border-none outline-none font-bold text-slate-800 placeholder:text-slate-300 py-4"
             value={searchCity}
             onChange={e => setSearchCity(e.target.value)}

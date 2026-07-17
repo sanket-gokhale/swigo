@@ -49,9 +49,15 @@ export const uploadToCloudinary = async (req: Request, res: Response, next: Next
     }
 
     for (const file of filesToUpload) {
-      const result = await cloudinaryUploadStream(file.buffer, 'swigo-storage');
-      // Map public URL to file.path so controllers work without modification
-      (file as any).path = result.secure_url;
+      try {
+        const result = await cloudinaryUploadStream(file.buffer, 'swigo-storage');
+        // Map public URL to file.path so controllers work without modification
+        (file as any).path = result.secure_url;
+      } catch (uploadError: any) {
+        console.warn('Cloudinary upload failed, falling back to base64 data URI:', uploadError.message);
+        const base64Data = file.buffer.toString('base64');
+        (file as any).path = `data:${file.mimetype};base64,${base64Data}`;
+      }
     }
 
     next();

@@ -52,6 +52,32 @@ export default function RegisterKitchen({ onSuccess }: { onSuccess: () => void }
     }
   };
 
+  const getCoordinatesFromAddress = async () => {
+    if (!formData.city || !formData.area) {
+      toast.error('Please enter City and Area first.');
+      return;
+    }
+    setLoading(true);
+    try {
+      const query = encodeURIComponent(`${formData.area}, ${formData.city}`);
+      const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`);
+      const data = await res.json();
+      if (data && data.length > 0) {
+        setCoords({
+          lat: parseFloat(data[0].lat),
+          lng: parseFloat(data[0].lon)
+        });
+        toast.success('Location coordinates resolved from address!');
+      } else {
+        toast.error('Could not find location coordinates for this address.');
+      }
+    } catch (err) {
+      toast.error('Error resolving coordinates from address.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -168,13 +194,25 @@ export default function RegisterKitchen({ onSuccess }: { onSuccess: () => void }
                   : 'Location not pinned yet'}
               </div>
             </div>
-            <button
-              type="button"
-              onClick={getLocation}
-              className="w-full h-[58px] rounded-2xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-primary/5"
-            >
-              📍 Pin Exact Location
-            </button>
+            <div className="space-y-2">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Set Coordinates Option</label>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={getLocation}
+                  className="w-full h-[58px] rounded-2xl bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2"
+                >
+                  📍 GPS Location
+                </button>
+                <button
+                  type="button"
+                  onClick={getCoordinatesFromAddress}
+                  className="w-full h-[58px] rounded-2xl bg-primary/10 text-primary hover:bg-primary hover:text-white transition-all font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-primary/5"
+                >
+                  🔍 Address Location
+                </button>
+              </div>
+            </div>
           </div>
 
           <div className="space-y-2">

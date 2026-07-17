@@ -26,5 +26,6 @@ export interface Property {
   foodCharges?: number;
   foodType?: 'Veg' | 'Non-Veg' | 'Both';
   linkedTiffinService?: any;
+  rooms?: any[];
   createdAt: string;
 }
