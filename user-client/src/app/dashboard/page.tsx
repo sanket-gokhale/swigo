@@ -36,6 +36,7 @@ export default function DashboardPage() {
   }, [router]);
 
   const loadData = async (lat?: number, lng?: number) => {
+    if (!getUser()) return;
     try {
       const allProps = await fetchProperties();
       setProperties(allProps);
@@ -97,6 +98,14 @@ export default function DashboardPage() {
     { name: 'Patna', lat: 25.5941, lng: 85.1376 },
     { name: 'Guwahati', lat: 26.1158, lng: 91.7086 }
   ];
+
+  if (!mounted || !user) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="h-12 w-12 border-4 border-primary border-t-transparent animate-spin rounded-full" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">

@@ -28,7 +28,7 @@ export default function LoginPage() {
         return;
       }
       
-      router.push('/search');
+      router.push('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Something went wrong');
     } finally {

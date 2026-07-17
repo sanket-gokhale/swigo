@@ -158,11 +158,27 @@ function RequestFormContent() {
 
 export default function RequestPage() {
   const router = useRouter();
+  const [mounted, setMounted] = React.useState(false);
+  const [user, setUser] = React.useState<any>(null);
+
   React.useEffect(() => {
-    if (!getUser()) {
+    setMounted(true);
+    const u = getUser();
+    if (!u) {
       router.push('/login?redirect=/requests');
+    } else {
+      setUser(u);
     }
   }, [router]);
+
+  if (!mounted || !user) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="h-12 w-12 border-4 border-primary border-t-transparent animate-spin rounded-full" />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
