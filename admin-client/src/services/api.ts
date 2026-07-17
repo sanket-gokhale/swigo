@@ -1,4 +1,18 @@
-export const API_BASE = process.env.NEXT_PUBLIC_API_BASE || process.env.API_BASE || 'http://127.0.0.1:5000/api';
+const getApiBase = () => {
+  if (process.env.NEXT_PUBLIC_API_BASE) return process.env.NEXT_PUBLIC_API_BASE;
+  if (process.env.API_BASE) return process.env.API_BASE;
+  
+  if (typeof window !== 'undefined') {
+    const hostname = window.location.hostname;
+    // If accessing via local network IP (e.g. 192.168.x.x), use it for API requests
+    if (hostname && hostname !== 'localhost' && hostname !== '127.0.0.1' && !hostname.endsWith('.vercel.app') && !hostname.endsWith('.onrender.com')) {
+      return `http://${hostname}:5000/api`;
+    }
+  }
+  return 'http://127.0.0.1:5000/api';
+};
+
+export const API_BASE = getApiBase();
 
 export function handleAuthError(res: Response) {
   if (res.status === 401 && typeof window !== 'undefined') {
