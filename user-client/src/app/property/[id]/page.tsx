@@ -220,48 +220,48 @@ export default function PropertyDetailPage() {
                 </div>
               </div>
 
-              {/* OPTION 1: Food Inside Property */}
+               {/* OPTION 1: Food Inside Property */}
               {property.hasFoodService && (
-                <div className="p-10 rounded-[2.5rem] bg-zinc-950 border border-zinc-800 space-y-8 shadow-2xl">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-5">
-                      <div className="h-14 w-14 bg-white/5 rounded-2xl flex items-center justify-center text-3xl">
+                <div className="p-6 md:p-10 rounded-[1.5rem] md:rounded-[2.5rem] bg-zinc-950 border border-zinc-800 space-y-6 md:space-y-8 shadow-2xl">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-4 md:gap-5">
+                      <div className="h-12 w-12 md:h-14 md:w-14 bg-white/5 rounded-xl md:rounded-2xl flex items-center justify-center text-2xl md:text-3xl">
                         🏠
                       </div>
                       <div>
-                        <h2 className="text-2xl font-bold text-zinc-50">In-House Food Service</h2>
-                        <p className="text-sm font-medium text-primary">Option 1: Food available inside property</p>
+                        <h2 className="text-xl md:text-2xl font-bold text-zinc-50">In-House Food Service</h2>
+                        <p className="text-xs md:text-sm font-medium text-primary">Option 1: Food available inside property</p>
                       </div>
                     </div>
                     {property.foodCharges && (
-                      <div className="text-right">
+                      <div className="text-left sm:text-right">
                         <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Monthly Charge</p>
-                        <p className="text-xl font-bold text-zinc-50">₹{property.foodCharges}</p>
+                        <p className="text-lg md:text-xl font-bold text-zinc-50">₹{property.foodCharges}</p>
                       </div>
                     )}
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pt-4">
-                    <div className="space-y-4">
-                      <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Provider Details</h3>
-                      <div className="p-5 rounded-2xl bg-white/5 space-y-2">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 pt-2 md:pt-4">
+                    <div className="space-y-3 md:space-y-4">
+                      <h3 className="text-xs md:text-sm font-bold text-zinc-500 uppercase tracking-wider">Provider Details</h3>
+                      <div className="p-4 md:p-5 rounded-xl md:rounded-2xl bg-white/5 space-y-2">
                         <p className="text-sm font-bold text-zinc-100">{property.linkedTiffinService?.name || 'Local Kitchen'}</p>
-                        <p className="text-sm text-zinc-400">
+                        <p className="text-xs md:text-sm text-zinc-400">
                           {property.linkedTiffinService?.description || 'Home-style meals prepared with fresh ingredients and hygiene standards.'}
                         </p>
                       </div>
                     </div>
-                    <div className="space-y-6">
-                      <h3 className="text-sm font-bold text-zinc-500 uppercase tracking-wider">Today&apos;s Menu</h3>
+                    <div className="space-y-4 md:space-y-6">
+                      <h3 className="text-xs md:text-sm font-bold text-zinc-500 uppercase tracking-wider">Today&apos;s Menu</h3>
                       <div className="p-4 rounded-xl bg-white/5 border border-white/5">
-                        <p className="text-sm text-zinc-300 italic">
+                        <p className="text-xs md:text-sm text-zinc-300 italic">
                           &quot;{property.linkedTiffinService?.menu?.[new Date().toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase()] || 'Special Chef\'s Thali'}&quot;
                         </p>
                       </div>
                       <button 
                         onClick={handleFoodRequest}
                         disabled={requestingFood}
-                        className="w-full py-4 bg-primary text-white rounded-2xl font-bold hover:shadow-lg hover:shadow-primary/20 transition-all disabled:opacity-50"
+                        className="w-full py-3.5 md:py-4 bg-primary text-white rounded-xl md:rounded-2xl text-sm font-bold hover:shadow-lg hover:shadow-primary/20 transition-all disabled:opacity-50"
                       >
                         {requestingFood ? 'Sending...' : 'Request This Meal Plan'}
                       </button>
@@ -271,16 +271,19 @@ export default function PropertyDetailPage() {
               )}
 
               {/* OPTION 2 Placeholder / Suggestion */}
-              <div className="p-8 rounded-3xl bg-slate-50 border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="p-6 md:p-8 rounded-2xl md:rounded-3xl bg-slate-50 border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6">
                 <div className="flex items-center gap-4">
-                   <div className="h-12 w-12 bg-white rounded-2xl flex items-center justify-center text-2xl shadow-sm">🍱</div>
+                   <div className="h-10 w-10 md:h-12 md:w-12 bg-white rounded-xl md:rounded-2xl flex items-center justify-center text-xl md:text-2xl shadow-sm flex-shrink-0">🍱</div>
                    <div>
                      <p className="text-sm font-bold text-slate-900">Looking for more variety?</p>
                      <p className="text-xs text-slate-500">Explore independent tiffin services delivering nearby.</p>
                    </div>
                 </div>
-                <Link href="/food" className="px-6 py-3 bg-white border border-slate-200 rounded-2xl text-xs font-bold text-primary hover:bg-primary hover:text-white transition-all shadow-sm">
-                  Search Independent Food
+                <Link 
+                  href="/food" 
+                  className="w-full md:w-auto text-center px-6 py-3 bg-slate-900 text-white rounded-xl md:rounded-2xl text-xs font-bold hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
+                >
+                  Explore Tiffins
                 </Link>
               </div>
 

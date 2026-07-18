@@ -36,7 +36,7 @@ export default function Footer() {
           <div>
             <h4 className="text-xs font-black uppercase tracking-widest text-zinc-500 mb-8">Travel</h4>
             <ul className="space-y-4">
-              {['Ride', 'Drive', 'Eat', 'Stays', 'Business', 'Tiffins'].map(item => (
+              {['Eat', 'Stays', 'Business', 'Tiffins'].map(item => (
                 <li key={item}>
                   <Link href="#" className="text-sm font-bold text-zinc-300 hover:text-white transition-colors">{item}</Link>
                 </li>
@@ -65,7 +65,7 @@ export default function Footer() {
             ))}
           </div>
           <div className="flex gap-8 text-[10px] font-black uppercase tracking-widest text-zinc-500">
-            <span>© 2024 Swigo Technologies Inc.</span>
+            <span>© 2026 Swigo Technologies Inc.</span>
             <Link href="#" className="hover:text-white transition-colors">Privacy</Link>
             <Link href="#" className="hover:text-white transition-colors">Accessibility</Link>
             <Link href="#" className="hover:text-white transition-colors">Terms</Link>

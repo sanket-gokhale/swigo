@@ -237,29 +237,29 @@ export default function DashboardPage() {
 
           {nearbyTiffins.length > 0 && (
             <section className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
-              <div className="flex items-end justify-between mb-10">
+              <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 md:mb-10">
                 <div>
-                  <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-600 text-[10px] font-bold uppercase tracking-widest mb-3">
+                  <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 text-amber-600 text-[10px] font-bold uppercase tracking-widest mb-2 md:mb-3">
                     <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
                     Fresh Food
                   </span>
-                  <h2 className="text-3xl font-bold text-slate-800">Nearby Tiffin Services</h2>
+                  <h2 className="text-2xl md:text-3xl font-bold text-slate-800">Nearby Tiffin Services</h2>
                 </div>
-                <Link href="/food" className="text-sm font-bold text-primary hover:underline">View menu</Link>
+                <Link href="/food" className="text-sm font-bold text-primary hover:underline self-start sm:self-auto">View menu</Link>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
                 {nearbyTiffins.slice(0, 3).map(tiffin => (
-                  <div key={tiffin._id} className="card-modern overflow-hidden group">
+                  <div key={tiffin._id} className="card-modern overflow-hidden group rounded-2xl md:rounded-[2.5rem]">
                     <div className="aspect-[1.5/1] relative overflow-hidden">
                       <img src={tiffin.images?.[0] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'} alt={tiffin.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
-                      <div className="absolute top-4 right-4 px-4 py-1 bg-white/90 backdrop-blur-md rounded-full text-xs font-black text-slate-900 shadow-xl">
+                      <div className="absolute top-3 right-3 md:top-4 md:right-4 px-3 py-1 md:px-4 md:py-1 bg-white/90 backdrop-blur-md rounded-full text-[10px] md:text-xs font-black text-slate-900 shadow-xl">
                         ₹{tiffin.price}/meal
                       </div>
                     </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold text-white mb-2">{tiffin.name}</h3>
-                      <p className="text-sm text-zinc-400 line-clamp-2">{tiffin.description}</p>
+                    <div className="p-4 md:p-6">
+                      <h3 className="text-lg md:text-xl font-bold text-white mb-1.5 md:mb-2">{tiffin.name}</h3>
+                      <p className="text-xs md:text-sm text-zinc-400 line-clamp-2">{tiffin.description}</p>
                     </div>
                   </div>
                 ))}

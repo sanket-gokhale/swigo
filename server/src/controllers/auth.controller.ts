@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { login, register, forgotPassword, resetPassword } from '../services/auth.service';
 import { sendResponse } from '../utils/response';
+import { sendResetPasswordEmail } from '../utils/email';
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
@@ -26,8 +27,18 @@ export const forgotPasswordController = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
     const resetToken = await forgotPassword(email);
-    // In a real app, you'd email this token. Here we return it for testing.
-    sendResponse(res, 200, 'Reset token generated', { resetToken });
+    
+    console.log(`[PASSWORD RESET] Token for ${email}: ${resetToken}`);
+    
+    // Send the password reset token to the user's email
+    try {
+      await sendResetPasswordEmail(email, resetToken);
+    } catch (emailError: any) {
+      console.error('Failed to send reset password email:', emailError.message);
+      console.warn('Please check your EMAIL_USER and EMAIL_PASS configuration in .env file.');
+    }
+    
+    sendResponse(res, 200, 'Reset token generated and sent to email', { resetToken });
   } catch (error: any) {
     sendResponse(res, 400, error.message);
   }

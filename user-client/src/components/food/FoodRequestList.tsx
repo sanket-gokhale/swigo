@@ -75,20 +75,20 @@ export default function FoodRequestList() {
       ) : (
         <div className="grid gap-6">
           {requests.map((request) => (
-            <div key={request._id} className="group relative flex flex-col md:flex-row gap-8 rounded-[40px] border border-zinc-100 bg-white p-8 shadow-sm transition-all hover:shadow-xl hover:border-primary/20">
-              <div className="h-24 w-24 rounded-3xl bg-primary/5 flex items-center justify-center text-3xl shadow-inner flex-shrink-0">
+            <div key={request._id} className="group relative flex flex-col sm:flex-row gap-4 md:gap-8 rounded-[1.5rem] md:rounded-[40px] border border-zinc-100 bg-white p-4 md:p-8 shadow-sm transition-all hover:shadow-xl hover:border-primary/20">
+              <div className="h-16 w-16 md:h-24 md:w-24 rounded-2xl md:rounded-3xl bg-primary/5 flex items-center justify-center text-2xl md:text-3xl shadow-inner flex-shrink-0">
                 🍱
               </div>
               
-              <div className="flex-1">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 md:gap-4 mb-3 md:mb-4">
                   <div>
-                    <h3 className="font-black text-xl text-zinc-900 tracking-tight">
+                    <h3 className="font-black text-lg md:text-xl text-zinc-900 tracking-tight">
                       {request.tiffin?.name || 'Tiffin Service'}
                     </h3>
-                    <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mt-1">Plan: {request.planSelected}</p>
+                    <p className="text-[10px] md:text-xs font-bold text-zinc-400 uppercase tracking-widest mt-1">Plan: {request.planSelected}</p>
                   </div>
-                  <div className={`px-4 py-2 rounded-full border text-[10px] font-black uppercase tracking-widest ${
+                  <div className={`self-start md:self-auto px-3 py-1 md:px-4 md:py-2 rounded-full border text-[9px] md:text-[10px] font-black uppercase tracking-widest ${
                     request.status === 'pending' ? 'bg-amber-50 text-amber-600 border-amber-100' : 
                     request.status === 'contacted' ? 'bg-blue-50 text-blue-600 border-blue-100' : 
                     'bg-emerald-50 text-emerald-600 border-emerald-100'
@@ -97,7 +97,7 @@ export default function FoodRequestList() {
                   </div>
                 </div>
                 
-                <div className="flex flex-wrap gap-8 text-sm font-bold text-zinc-600 mb-6">
+                <div className="flex flex-wrap gap-4 md:gap-8 text-xs md:text-sm font-bold text-zinc-600 mb-4 md:mb-6">
                   <div className="flex items-center gap-2">
                     <span className="text-primary opacity-80">📅</span>
                     <span>{new Date(request.createdAt).toLocaleDateString()}</span>
@@ -109,9 +109,9 @@ export default function FoodRequestList() {
                 </div>
                 
                 {request.message && (
-                  <div className="p-4 rounded-2xl bg-zinc-50 border border-zinc-100">
-                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Your Message</p>
-                    <p className="text-sm text-zinc-600 italic">"{request.message}"</p>
+                  <div className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-zinc-50 border border-zinc-100">
+                    <p className="text-[9px] md:text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">Your Message</p>
+                    <p className="text-xs md:text-sm text-zinc-600 italic">"{request.message}"</p>
                   </div>
                 )}
               </div>
