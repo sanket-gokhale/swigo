@@ -35,7 +35,7 @@ export const forgotPasswordController = async (req: Request, res: Response) => {
       await sendResetPasswordEmail(email, resetToken);
     } catch (emailError: any) {
       console.error('Failed to send reset password email:', emailError.message);
-      console.warn('Please check your EMAIL_USER and EMAIL_PASS configuration in .env file.');
+      console.warn('Please check your BREVO_API_KEY configuration in .env file.');
     }
     
     sendResponse(res, 200, 'Reset token generated and sent to email', { resetToken });
