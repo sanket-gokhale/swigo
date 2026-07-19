@@ -23,12 +23,13 @@ export default function Navbar() {
   });
 
   const checkAllPortals = async () => {
+    const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
     const targets = [
-      { key: 'user', url: 'http://localhost:3000' },
-      { key: 'owner', url: 'http://localhost:3001' },
-      { key: 'admin', url: 'http://localhost:3002' },
-      { key: 'tiffin', url: 'http://localhost:3003' },
-      { key: 'server', url: 'http://localhost:5000' }
+      { key: 'user', url: isLocal ? 'http://localhost:3000' : 'https://swigo-user-client.vercel.app' },
+      { key: 'owner', url: isLocal ? 'http://localhost:3001' : 'https://swigo-owner-client.vercel.app' },
+      { key: 'admin', url: isLocal ? 'http://localhost:3002' : 'https://swigo-admin-client.vercel.app' },
+      { key: 'tiffin', url: isLocal ? 'http://localhost:3003' : 'https://swigo-tiffin-client.vercel.app' },
+      { key: 'server', url: isLocal ? 'http://localhost:5000' : 'https://swigo.onrender.com' }
     ];
     
     setStatuses({

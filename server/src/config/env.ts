@@ -13,6 +13,6 @@ export const EMAIL_USER = process.env.EMAIL_USER;
 export const EMAIL_PASS = process.env.EMAIL_PASS;
 export const BREVO_API_KEY = process.env.BREVO_API_KEY;
 export const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || 'appflux.tech@gmail.com';
-export const BREVO_SENDER_NAME = process.env.BREVO_SENDER_NAME || 'Swigo Support';
+export const BREVO_SENDER_NAME = process.env.BREVO_SENDER_NAME || 'Swigo ';
 
 export const NODE_ENV = process.env.NODE_ENV || 'development';

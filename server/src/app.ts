@@ -19,8 +19,30 @@ const app = express();
 app.use(helmet({
   crossOriginResourcePolicy: false
 }));
+const allowedOrigins = [
+  'https://swigo-user-client.vercel.app',
+  'https://swigo-tiffin-client.vercel.app',
+  'https://swigo-owner-client.vercel.app',
+  'https://swigo-admin-client.vercel.app',
+  'https://swigo.onrender.com',
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:3002',
+  'http://localhost:3003',
+  'http://127.0.0.1:3000',
+  'http://127.0.0.1:3001',
+  'http://127.0.0.1:3002',
+  'http://127.0.0.1:3003'
+];
+
 app.use(cors({
-  origin: true, // Allow all origins in development
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin) || origin.endsWith('.vercel.app') || process.env.NODE_ENV !== 'production') {
+      return callback(null, true);
+    }
+    return callback(null, true);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization']

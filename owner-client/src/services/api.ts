@@ -20,6 +20,11 @@ const getApiBase = () => {
       return `http://${hostname}:5000/api`;
     }
   }
+
+  if (process.env.NODE_ENV === 'production') {
+    return 'https://swigo.onrender.com/api';
+  }
+
   return 'http://127.0.0.1:5000/api';
 };
 

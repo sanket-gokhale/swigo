@@ -102,12 +102,13 @@ function DashboardContent() {
 
   const pingPortals = async (freshSettings?: any) => {
     const activeSettings = freshSettings || settings;
+    const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
     const targets = [
-      { key: 'user', url: 'http://localhost:3000' },
-      { key: 'owner', url: 'http://localhost:3001' },
-      { key: 'admin', url: 'http://localhost:3002' },
-      { key: 'tiffin', url: 'http://localhost:3003' },
-      { key: 'server', url: 'http://localhost:5000' }
+      { key: 'user', url: isLocal ? 'http://localhost:3000' : 'https://swigo-user-client.vercel.app' },
+      { key: 'owner', url: isLocal ? 'http://localhost:3001' : 'https://swigo-owner-client.vercel.app' },
+      { key: 'admin', url: isLocal ? 'http://localhost:3002' : 'https://swigo-admin-client.vercel.app' },
+      { key: 'tiffin', url: isLocal ? 'http://localhost:3003' : 'https://swigo-tiffin-client.vercel.app' },
+      { key: 'server', url: isLocal ? 'http://localhost:5000' : 'https://swigo.onrender.com' }
     ];
 
     const nextStatuses: any = {
@@ -799,10 +800,10 @@ function DashboardContent() {
                     </div>
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                       {[
-                        { key: 'user', name: 'User Front-End Portal', desc: 'Customer & Student area', port: '3000', url: 'http://localhost:3000', color: 'border-blue-200 bg-blue-50/40 text-blue-700' },
-                        { key: 'owner', name: 'Owner Management Portal', desc: 'Property & Room manager area', port: '3001', url: 'http://localhost:3001', color: 'border-purple-200 bg-purple-50/40 text-purple-700' },
-                        { key: 'tiffin', name: 'Tiffin Kitchen Portal', desc: 'Food & Meal provider area', port: '3003', url: 'http://localhost:3003', color: 'border-amber-200 bg-amber-50/40 text-amber-700' },
-                        { key: 'server', name: 'Backend API Server', desc: 'Core Express API & DB', port: '5000', url: 'http://localhost:5000', color: 'border-emerald-200 bg-emerald-50/40 text-emerald-700' }
+                        { key: 'user', name: 'User Front-End Portal', desc: 'Customer & Student area', port: '3000', url: 'https://swigo-user-client.vercel.app', color: 'border-blue-200 bg-blue-50/40 text-blue-700' },
+                        { key: 'owner', name: 'Owner Management Portal', desc: 'Property & Room manager area', port: '3001', url: 'https://swigo-owner-client.vercel.app', color: 'border-purple-200 bg-purple-50/40 text-purple-700' },
+                        { key: 'tiffin', name: 'Tiffin Kitchen Portal', desc: 'Food & Meal provider area', port: '3003', url: 'https://swigo-tiffin-client.vercel.app', color: 'border-amber-200 bg-amber-50/40 text-amber-700' },
+                        { key: 'server', name: 'Backend API Server', desc: 'Core Express API & DB', port: '5000', url: 'https://swigo.onrender.com', color: 'border-emerald-200 bg-emerald-50/40 text-emerald-700' }
                       ].map(p => {
                         const status = portalStatuses[p.key] || 'checking';
                         const isMaintenance = settings ? (
@@ -1841,11 +1842,11 @@ function DashboardContent() {
                   {/* Telemetry Grid */}
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {[
-                      { key: 'server', name: 'Express Backend API Server', port: '5000', url: 'http://localhost:5000', color: 'text-emerald-500', bg: 'bg-emerald-50/30' },
-                      { key: 'user', name: 'User Front-End Portal', port: '3000', url: 'http://localhost:3000', color: 'text-blue-500', bg: 'bg-blue-50/30' },
-                      { key: 'owner', name: 'Owner Management Portal', port: '3001', url: 'http://localhost:3001', color: 'text-purple-500', bg: 'bg-purple-50/30' },
-                      { key: 'tiffin', name: 'Tiffin Kitchen Portal', port: '3003', url: 'http://localhost:3003', color: 'text-amber-500', bg: 'bg-amber-50/30' },
-                      { key: 'admin', name: 'Admin Control Center (Current)', port: '3002', url: 'http://localhost:3002', color: 'text-indigo-500', bg: 'bg-indigo-50/30' }
+                      { key: 'server', name: 'Express Backend API Server', port: '5000', url: 'https://swigo.onrender.com', color: 'text-emerald-500', bg: 'bg-emerald-50/30' },
+                      { key: 'user', name: 'User Front-End Portal', port: '3000', url: 'https://swigo-user-client.vercel.app', color: 'text-blue-500', bg: 'bg-blue-50/30' },
+                      { key: 'owner', name: 'Owner Management Portal', port: '3001', url: 'https://swigo-owner-client.vercel.app', color: 'text-purple-500', bg: 'bg-purple-50/30' },
+                      { key: 'tiffin', name: 'Tiffin Kitchen Portal', port: '3003', url: 'https://swigo-tiffin-client.vercel.app', color: 'text-amber-500', bg: 'bg-amber-50/30' },
+                      { key: 'admin', name: 'Admin Control Center (Current)', port: '3002', url: 'https://swigo-admin-client.vercel.app', color: 'text-indigo-500', bg: 'bg-indigo-50/30' }
                     ].map(portal => {
                       const status = portalStatuses[portal.key];
                       const stats = liveStats[portal.key] || { latency: 0, cpu: 0, memory: 0, uptime: 'N/A', errorRate: 0 };
