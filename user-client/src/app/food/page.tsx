@@ -74,13 +74,19 @@ export default function FoodSearchPage() {
             <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-3 md:gap-4 p-2 bg-white/10 backdrop-blur-xl rounded-[1.5rem] md:rounded-[2.5rem] border border-white/10 shadow-2xl">
               <div className="flex-1 flex items-center px-4 md:px-6 gap-2 md:gap-4">
                 <span className="text-xl md:text-2xl">📍</span>
-                <input 
-                  type="text" 
+                <select 
                   value={searchCity}
-                  onChange={(e) => setSearchCity(e.target.value)}
-                  placeholder="Enter your city (e.g. Pune, Mumbai, Delhi)"
-                  className="w-full bg-transparent border-none text-white placeholder-slate-500 focus:ring-0 py-3 md:py-5 font-bold text-sm md:text-base"
-                />
+                  onChange={(e) => {
+                    setSearchCity(e.target.value);
+                    fetchTiffins(e.target.value);
+                  }}
+                  className="w-full bg-transparent border-none text-white focus:ring-0 py-3 md:py-5 font-bold text-sm md:text-base outline-none cursor-pointer"
+                >
+                  <option value="" className="bg-slate-900 text-white font-semibold">-- Select City (All Cities) --</option>
+                  {['Pune', 'Mumbai', 'Nagpur', 'Delhi', 'Noida', 'Gurugram', 'Bengaluru', 'Hyderabad', 'Chennai', 'Kolkata', 'Ahmedabad', 'Nashik', 'Chhatrapati Sambhajinagar', 'Indore', 'Bhopal', 'Jaipur', 'Lucknow', 'Surat', 'Vadodara', 'Coimbatore', 'Kochi', 'Visakhapatnam', 'Chandigarh'].map(c => (
+                    <option key={c} value={c} className="bg-slate-900 text-white font-semibold">{c}</option>
+                  ))}
+                </select>
               </div>
               <button 
                 type="submit"

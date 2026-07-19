@@ -11,7 +11,7 @@ export default function RegisterKitchen({ onSuccess }: { onSuccess: () => void }
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    city: 'Pune',
+    city: '',
     area: '',
     price: 3000,
     type: 'independent',
@@ -163,14 +163,18 @@ export default function RegisterKitchen({ onSuccess }: { onSuccess: () => void }
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">City</label>
-              <input
-                type="text"
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">City *</label>
+              <select
                 required
-                className="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:ring-4 focus:ring-primary/10 outline-none font-bold"
+                className="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:ring-4 focus:ring-primary/10 outline-none font-bold text-slate-800"
                 value={formData.city}
                 onChange={e => setFormData({ ...formData, city: e.target.value })}
-              />
+              >
+                <option value="" disabled>-- Select City (Required) --</option>
+                {['Pune', 'Mumbai', 'Nagpur', 'Delhi', 'Noida', 'Gurugram', 'Bengaluru', 'Hyderabad', 'Chennai', 'Kolkata', 'Ahmedabad', 'Nashik', 'Chhatrapati Sambhajinagar', 'Indore', 'Bhopal', 'Jaipur', 'Lucknow', 'Surat', 'Vadodara', 'Coimbatore', 'Kochi', 'Visakhapatnam', 'Chandigarh'].map(c => (
+                  <option key={c} value={c}>{c}</option>
+                ))}
+              </select>
             </div>
             <div className="space-y-2">
               <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Area / Locality</label>

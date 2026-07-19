@@ -239,14 +239,18 @@ export default function TiffinProfilePage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-slate-600 mb-2">City</label>
-                <input 
-                  type="text" 
+                <label className="block text-sm font-semibold text-slate-600 mb-2">City *</label>
+                <select 
                   value={formData.city}
                   onChange={e => setFormData({...formData, city: e.target.value})}
-                  className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-primary"
+                  className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-primary font-bold text-slate-800"
                   required
-                />
+                >
+                  <option value="" disabled>-- Select City (Required) --</option>
+                  {['Pune', 'Mumbai', 'Nagpur', 'Delhi', 'Noida', 'Gurugram', 'Bengaluru', 'Hyderabad', 'Chennai', 'Kolkata', 'Ahmedabad', 'Nashik', 'Chhatrapati Sambhajinagar', 'Indore', 'Bhopal', 'Jaipur', 'Lucknow', 'Surat', 'Vadodara', 'Coimbatore', 'Kochi', 'Visakhapatnam', 'Chandigarh'].map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-semibold text-slate-600 mb-2">Area</label>
