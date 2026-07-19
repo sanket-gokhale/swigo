@@ -219,14 +219,19 @@ export default function FindPropertiesPage() {
             <div className="w-full flex gap-4 bg-white p-2 rounded-[2rem] shadow-xl border border-slate-100">
               <div className="flex-1 flex items-center px-6 gap-4">
                 <span className="text-2xl">📍</span>
-                <input 
-                  type="text" 
-                  placeholder="Search by city..." 
-                  className="w-full bg-transparent border-none outline-none font-bold text-slate-800 placeholder:text-slate-300 py-4"
+                <select 
+                  className="w-full bg-transparent border-none outline-none font-bold text-slate-800 py-4 cursor-pointer"
                   value={searchCity}
-                  onChange={e => setSearchCity(e.target.value)}
-                  onKeyDown={e => e.key === 'Enter' && fetchProperties(searchCity)}
-                />
+                  onChange={e => {
+                    setSearchCity(e.target.value);
+                    fetchProperties(e.target.value);
+                  }}
+                >
+                  <option value="">-- Select City (All Cities) --</option>
+                  {['Pune', 'Mumbai', 'Nagpur', 'Delhi', 'Noida', 'Gurugram', 'Bengaluru', 'Hyderabad', 'Chennai', 'Kolkata', 'Ahmedabad', 'Nashik', 'Chhatrapati Sambhajinagar', 'Indore', 'Bhopal', 'Jaipur', 'Lucknow', 'Surat', 'Vadodara', 'Coimbatore', 'Kochi', 'Visakhapatnam', 'Chandigarh'].map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
               </div>
               <button 
                 onClick={() => fetchProperties(searchCity)}

@@ -21,7 +21,7 @@ export default function ProfilePage() {
   
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
-  const [city, setCity] = useState('Pune');
+  const [city, setCity] = useState('');
   const [bio, setBio] = useState('');
   
   const router = useRouter();
@@ -38,7 +38,7 @@ export default function ProfilePage() {
       setUser(userData);
       setName(userData.name || '');
       setPhone(userData.phone || '');
-      setCity(userData.city || 'Pune');
+      setCity(userData.city || '');
       setBio(userData.bio || '');
       setLoading(false);
     };
@@ -98,7 +98,9 @@ export default function ProfilePage() {
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     className="w-full rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-bold text-slate-900 dark:bg-slate-900 dark:border-slate-800 dark:text-white outline-none focus:ring-4 focus:ring-primary/10 transition-all appearance-none"
+                    required
                   >
+                    <option value="" disabled>-- Select City (Required) --</option>
                     {cities.map(c => (
                       <option key={c} value={c}>{c}</option>
                     ))}
