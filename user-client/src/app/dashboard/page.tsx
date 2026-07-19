@@ -32,13 +32,22 @@ export default function DashboardPage() {
       const allProps = await fetchProperties();
       setProperties(allProps);
 
+      let tiffinData: any;
       if (lat && lng) {
         const nearby = await fetchProperties({ lat, lng, distance: 10000 });
         setNearbyProperties(nearby);
+        tiffinData = await getJSON(`/tiffins?lat=${lat}&lng=${lng}&distance=10000`);
+      } else {
+        tiffinData = await getJSON('/tiffins');
+      }
 
-        // Fetch nearby tiffins
-        const tiffinData = await getJSON(`/tiffins?lat=${lat}&lng=${lng}&distance=10000`);
-        setNearbyTiffins(tiffinData.data || tiffinData || []);
+      const list = Array.isArray(tiffinData?.data) ? tiffinData.data : (Array.isArray(tiffinData) ? tiffinData : []);
+      if (list.length === 0 && lat && lng) {
+        const fallback = await getJSON('/tiffins');
+        const fallbackList = Array.isArray(fallback?.data) ? fallback.data : (Array.isArray(fallback) ? fallback : []);
+        setNearbyTiffins(fallbackList);
+      } else {
+        setNearbyTiffins(list);
       }
     } catch (err) {
       console.error('Failed to load dashboard data', err);

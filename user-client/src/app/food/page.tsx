@@ -11,6 +11,7 @@ export default function FoodSearchPage() {
   const [tiffins, setTiffins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchCity, setSearchCity] = useState('');
+  const [activeFilter, setActiveFilter] = useState('All');
 
   useEffect(() => {
     fetchTiffins();
@@ -19,10 +20,13 @@ export default function FoodSearchPage() {
   const fetchTiffins = async (city = '') => {
     setLoading(true);
     try {
-      const data = await getJSON(`/tiffins?city=${city}&type=independent`);
-      setTiffins(data.data || data || []);
+      const queryParam = city ? `?city=${encodeURIComponent(city)}` : '';
+      const data = await getJSON(`/tiffins${queryParam}`);
+      const tiffinList = Array.isArray(data.data) ? data.data : (Array.isArray(data) ? data : []);
+      setTiffins(tiffinList);
     } catch (err) {
-      console.error('Failed to fetch tiffins');
+      console.error('Failed to fetch tiffins', err);
+      setTiffins([]);
     } finally {
       setLoading(false);
     }
@@ -32,6 +36,20 @@ export default function FoodSearchPage() {
     e.preventDefault();
     fetchTiffins(searchCity);
   };
+
+  const filteredTiffins = tiffins.filter(tiffin => {
+    if (activeFilter === 'All') return true;
+    if (activeFilter === 'Veg') {
+      const desc = (tiffin.description || '').toLowerCase();
+      const name = (tiffin.name || '').toLowerCase();
+      return desc.includes('veg') || name.includes('veg');
+    }
+    if (activeFilter === 'Non-Veg') {
+      const desc = (tiffin.description || '').toLowerCase();
+      return desc.includes('non-veg') || desc.includes('chicken') || desc.includes('mutton');
+    }
+    return true;
+  });
 
   return (
     <div className="min-h-screen bg-white flex flex-col">
@@ -60,7 +78,7 @@ export default function FoodSearchPage() {
                   type="text" 
                   value={searchCity}
                   onChange={(e) => setSearchCity(e.target.value)}
-                  placeholder="Enter your city (e.g. Noida, Delhi)"
+                  placeholder="Enter your city (e.g. Pune, Mumbai, Delhi)"
                   className="w-full bg-transparent border-none text-white placeholder-slate-500 focus:ring-0 py-3 md:py-5 font-bold text-sm md:text-base"
                 />
               </div>
@@ -82,8 +100,16 @@ export default function FoodSearchPage() {
               <p className="text-sm text-slate-500 font-medium mt-1">Based on ratings and nearby delivery area</p>
             </div>
             <div className="flex flex-wrap gap-2 md:gap-4">
-               {['Veg', 'Non-Veg', 'Monthly', 'Daily'].map(filter => (
-                 <button key={filter} className="px-4 py-2 md:px-6 md:py-2.5 bg-slate-50 border border-slate-100 rounded-full text-xs font-bold text-slate-600 hover:border-primary hover:text-primary transition-all">
+               {['All', 'Veg', 'Non-Veg', 'Monthly', 'Daily'].map(filter => (
+                 <button 
+                   key={filter} 
+                   onClick={() => setActiveFilter(filter)}
+                   className={`px-4 py-2 md:px-6 md:py-2.5 rounded-full text-xs font-bold transition-all ${
+                     activeFilter === filter
+                       ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                       : 'bg-slate-50 border border-slate-100 text-slate-600 hover:border-primary hover:text-primary'
+                   }`}
+                 >
                    {filter}
                  </button>
                ))}
@@ -98,14 +124,14 @@ export default function FoodSearchPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-10">
-              {tiffins.map(tiffin => (
+              {filteredTiffins.map(tiffin => (
                 <TiffinCard key={tiffin._id} tiffin={tiffin} />
               ))}
-              {tiffins.length === 0 && (
+              {filteredTiffins.length === 0 && (
                 <div className="col-span-full py-12 md:py-20 text-center">
                    <p className="text-3xl md:text-4xl">🥘</p>
                    <h3 className="text-xl md:text-2xl font-bold text-slate-900 mt-4">No tiffin services found</h3>
-                   <p className="text-sm text-slate-500 mt-2">Try searching for a different city or area.</p>
+                   <p className="text-sm text-slate-500 mt-2">Try searching for a different city or filter.</p>
                 </div>
               )}
             </div>

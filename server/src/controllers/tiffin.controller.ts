@@ -5,8 +5,8 @@ import { sendResponse } from '../utils/response';
 
 export const getTiffins = async (req: AuthRequest, res: Response) => {
   try {
-    const { city, type } = req.query;
-    const tiffins = await tiffinService.getAllTiffins({ city, type });
+    const { city, type, lat, lng, distance } = req.query;
+    const tiffins = await tiffinService.getAllTiffins({ city, type, lat, lng, distance });
     sendResponse(res, 200, 'Tiffins retrieved', tiffins);
   } catch (error: any) {
     sendResponse(res, 400, error.message);

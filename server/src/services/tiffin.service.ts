@@ -1,11 +1,26 @@
 import prisma from '../config/prisma';
 
+function getDistanceInMeters(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const R = 6371e3;
+  const φ1 = (lat1 * Math.PI) / 180;
+  const φ2 = (lat2 * Math.PI) / 180;
+  const Δφ = ((lat2 - lat1) * Math.PI) / 180;
+  const Δλ = ((lon2 - lon1) * Math.PI) / 180;
+
+  const a =
+    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+  return R * c;
+}
+
 export const getAllTiffins = async (filters: any = {}) => {
   const where: any = {};
-  if (filters.city) {
-    where.city = { contains: filters.city, mode: 'insensitive' };
+  if (filters.city && String(filters.city).trim() !== '') {
+    where.city = { contains: String(filters.city).trim(), mode: 'insensitive' };
   }
-  if (filters.type) {
+  if (filters.type && filters.type !== 'all' && String(filters.type).trim() !== '') {
     where.type = filters.type;
   }
   const tiffins = await prisma.tiffin.findMany({
@@ -15,7 +30,36 @@ export const getAllTiffins = async (filters: any = {}) => {
     },
     orderBy: { createdAt: 'desc' }
   });
-  return tiffins.map((t: any) => ({ ...t, _id: t.id, provider: t.provider || t.providerId }));
+  
+  let result = tiffins.map((t: any) => ({ ...t, _id: t.id, provider: t.provider || t.providerId }));
+
+  if (filters.lat && filters.lng) {
+    const userLat = Number(filters.lat);
+    const userLng = Number(filters.lng);
+    const maxDist = filters.distance ? Number(filters.distance) : 50000;
+
+    result = result.filter((tiffin: any) => {
+      if (!tiffin.coordinates) return true;
+      let tLat: number | undefined;
+      let tLng: number | undefined;
+
+      if (typeof tiffin.coordinates === 'object') {
+        const coords = (tiffin.coordinates as any)?.coordinates || tiffin.coordinates;
+        if (Array.isArray(coords) && coords.length >= 2) {
+          tLng = Number(coords[0]);
+          tLat = Number(coords[1]);
+        }
+      }
+
+      if (tLat !== undefined && tLng !== undefined && !isNaN(tLat) && !isNaN(tLng)) {
+        const dist = getDistanceInMeters(userLat, userLng, tLat, tLng);
+        return dist <= maxDist;
+      }
+      return true;
+    });
+  }
+
+  return result;
 };
 
 export const getTiffinById = async (id: string) => {
