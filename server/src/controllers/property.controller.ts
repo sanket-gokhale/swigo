@@ -15,8 +15,9 @@ export const getOwnerStats = async (req: AuthRequest, res: Response) => {
 
 export const getProperties = async (req: AuthRequest, res: Response) => {
   try {
-    const { city, lat, lng, distance, type, minRating } = req.query;
-    const properties = await propertyService.getAllProperties({ city, lat, lng, distance, type, minRating });
+    const { city, lat, lng, distance, type, minRating, search, query, q } = req.query;
+    const searchFilter = (search || query || q) as string;
+    const properties = await propertyService.getAllProperties({ city, lat, lng, distance, type, minRating, search: searchFilter });
     sendResponse(res, 200, 'Properties retrieved', properties);
   } catch (error: any) {
     sendResponse(res, 400, error.message);

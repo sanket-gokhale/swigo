@@ -37,7 +37,8 @@ import {
   getOtps,
   createOtpAdmin,
   deleteOtpAdmin,
-  seedAdminData
+  seedAdminData,
+  clearAdminData
 } from '../controllers/admin.controller';
 
 const router = Router();
@@ -51,8 +52,9 @@ const isAdmin = (req: any, res: any, next: any) => {
   }
 };
 
-// Seed route is public for easy developer setup
+// Seed & clear routes
 router.post('/seed', seedAdminData);
+router.post('/clear', clearAdminData);
 
 // Secured administrative endpoints
 router.get('/stats', authenticate, isAdmin, getStats);

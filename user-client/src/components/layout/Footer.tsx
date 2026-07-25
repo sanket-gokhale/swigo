@@ -47,9 +47,14 @@ export default function Footer() {
           <div>
             <h4 className="text-xs font-black uppercase tracking-widest text-zinc-500 mb-8">Support</h4>
             <ul className="space-y-4">
-              {['Help Center', 'Safety', 'Terms', 'Privacy'].map(item => (
-                <li key={item}>
-                  <Link href="#" className="text-sm font-bold text-zinc-300 hover:text-white transition-colors">{item}</Link>
+              {[
+                { name: 'Help Center', path: '/help' },
+                { name: 'Safety', path: '/safety' },
+                { name: 'Terms', path: '/terms' },
+                { name: 'Privacy', path: '/privacy' }
+              ].map(item => (
+                <li key={item.name}>
+                  <Link href={item.path} className="text-sm font-bold text-zinc-300 hover:text-white transition-colors">{item.name}</Link>
                 </li>
               ))}
             </ul>
@@ -66,9 +71,9 @@ export default function Footer() {
           </div>
           <div className="flex gap-8 text-[10px] font-black uppercase tracking-widest text-zinc-500">
             <span>© 2026 Swigo Technologies Inc.</span>
-            <Link href="#" className="hover:text-white transition-colors">Privacy</Link>
-            <Link href="#" className="hover:text-white transition-colors">Accessibility</Link>
-            <Link href="#" className="hover:text-white transition-colors">Terms</Link>
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+            <Link href="/help" className="hover:text-white transition-colors">Accessibility</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
           </div>
         </div>
       </div>

@@ -98,19 +98,19 @@ export default function PropertyDetailPage() {
         <section className="max-w-7xl mx-auto px-4 pt-12">
           <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 h-[400px] md:h-[600px] rounded-[3rem] overflow-hidden shadow-2xl shadow-slate-200/50 dark:shadow-none">
             <div className="md:col-span-2 md:row-span-2 relative">
-              <img src={property.images[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267'} className="w-full h-full object-cover transition-all duration-700 hover:scale-105" alt="Main" />
+              <img src={property.images?.[0] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600"><rect width="600" height="600" fill="%2318181b"/><path d="M240 270h120v90H240zM180 360h240v-135H180zM300 120l-135 105h270z" fill="%23ff5a5f"/><text x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="%23a1a1aa" font-family="sans-serif" font-size="18" font-weight="bold">No Image Available</text></svg>'} className="w-full h-full object-cover transition-all duration-700 hover:scale-105" alt="Main" />
               <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md text-slate-900 px-6 py-2 rounded-full text-xs font-bold shadow-lg">
                 ✨ Featured Stay
               </div>
             </div>
             <div className="hidden md:block md:col-span-2 relative">
-              <img src={property.images[1] || 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688'} className="w-full h-full object-cover transition-all duration-700 hover:scale-105" alt="Room 1" />
+              <img src={property.images?.[1] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="300" viewBox="0 0 600 300"><rect width="600" height="300" fill="%2327272a"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23a1a1aa" font-family="sans-serif" font-size="16">Stay Photo 1</text></svg>'} className="w-full h-full object-cover transition-all duration-700 hover:scale-105" alt="Room 1" />
             </div>
             <div className="hidden md:block relative">
-              <img src={property.images[2] || 'https://images.unsplash.com/photo-1484154218962-a197022b5858'} className="w-full h-full object-cover transition-all duration-700 hover:scale-105" alt="Room 2" />
+              <img src={property.images?.[2] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect width="300" height="300" fill="%2327272a"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23a1a1aa" font-family="sans-serif" font-size="14">Stay Photo 2</text></svg>'} className="w-full h-full object-cover transition-all duration-700 hover:scale-105" alt="Room 2" />
             </div>
             <div className="hidden md:block relative group">
-              <img src={property.images[3] || property.images[0]} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" alt="More" />
+              <img src={property.images?.[3] || property.images?.[0] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300"><rect width="300" height="300" fill="%2327272a"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23a1a1aa" font-family="sans-serif" font-size="14">Stay Photo 3</text></svg>'} className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" alt="More" />
               <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] flex items-center justify-center text-white font-bold text-lg cursor-pointer group-hover:bg-slate-900/60 transition-all">
                 View All Photos
               </div>

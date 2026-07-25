@@ -11,7 +11,7 @@ export default function PropertyCard({ property }: { property: Property }) {
         {/* Image Container */}
         <div className="relative aspect-[1.3/1] overflow-hidden rounded-[1.5rem] m-2">
           <img 
-            src={property.images?.[0] || 'https://via.placeholder.com/400x300'} 
+            src={property.images?.[0] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="%2318181b"/><path d="M160 180h80v60h-80zM120 240h160v-90H120zM200 80l-90 70h180z" fill="%23ff5a5f"/><text x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="%23a1a1aa" font-family="sans-serif" font-size="14" font-weight="bold">No Image</text></svg>'} 
             alt={property.title}
             className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
           />

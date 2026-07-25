@@ -17,6 +17,19 @@ function getDistanceInMeters(lat1: number, lon1: number, lat2: number, lon2: num
 export const getAllProperties = async (filters: any = {}) => {
   const where: any = {};
 
+  if (filters.search) {
+    const searchTerm = String(filters.search).trim();
+    if (searchTerm) {
+      where.OR = [
+        { title: { contains: searchTerm, mode: 'insensitive' } },
+        { area: { contains: searchTerm, mode: 'insensitive' } },
+        { address: { contains: searchTerm, mode: 'insensitive' } },
+        { city: { contains: searchTerm, mode: 'insensitive' } },
+        { description: { contains: searchTerm, mode: 'insensitive' } }
+      ];
+    }
+  }
+
   if (filters.city) {
     where.city = { contains: filters.city, mode: 'insensitive' };
   }

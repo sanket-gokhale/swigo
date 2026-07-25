@@ -22,7 +22,7 @@ export default function TiffinCard({ tiffin }: TiffinCardProps) {
     <div className="group relative bg-white rounded-[1.5rem] md:rounded-[2.5rem] border border-slate-100 p-3 md:p-4 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-200/50 hover:-translate-y-2">
       <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.2rem] md:rounded-[2rem]">
         <img 
-          src={tiffin.images?.[0] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'} 
+          src={tiffin.images?.[0] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="%230f172a"/><circle cx="200" cy="120" r="45" fill="%23ff5a5f"/><text x="50%" y="82%" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-family="sans-serif" font-size="14" font-weight="bold">Homely Tiffin Service</text></svg>'} 
           alt={tiffin.name} 
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
         />

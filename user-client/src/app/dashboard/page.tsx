@@ -21,6 +21,16 @@ export default function DashboardPage() {
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [showLocationDropdown, setShowLocationDropdown] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = () => {
+    const q = searchQuery.trim();
+    if (q) {
+      router.push(`/search?search=${encodeURIComponent(q)}`);
+    } else {
+      router.push('/search');
+    }
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -143,7 +153,10 @@ export default function DashboardPage() {
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                   <input 
                     type="text" 
-                    placeholder="Search by area or locality" 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') handleSearch(); }}
+                    placeholder="Search by area, locality, or stay name" 
                     className="w-full bg-transparent border-none outline-none text-slate-700 font-medium placeholder:text-slate-300"
                   />
                 </div>
@@ -193,7 +206,7 @@ export default function DashboardPage() {
                   )}
                 </div>
                 
-                <button className="btn-primary px-10">
+                <button type="button" onClick={handleSearch} className="btn-primary px-10">
                   Search
                 </button>
               </div>
@@ -261,7 +274,7 @@ export default function DashboardPage() {
                 {nearbyTiffins.slice(0, 3).map(tiffin => (
                   <div key={tiffin._id} className="card-modern overflow-hidden group rounded-2xl md:rounded-[2.5rem]">
                     <div className="aspect-[1.5/1] relative overflow-hidden">
-                      <img src={tiffin.images?.[0] || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'} alt={tiffin.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
+                      <img src={tiffin.images?.[0] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="%230f172a"/><circle cx="200" cy="120" r="45" fill="%23ff5a5f"/><text x="50%" y="82%" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-family="sans-serif" font-size="14" font-weight="bold">Homely Tiffin Service</text></svg>'} alt={tiffin.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
                       <div className="absolute top-3 right-3 md:top-4 md:right-4 px-3 py-1 md:px-4 md:py-1 bg-white/90 backdrop-blur-md rounded-full text-[10px] md:text-xs font-black text-slate-900 shadow-xl">
                         ₹{tiffin.price}/meal
                       </div>

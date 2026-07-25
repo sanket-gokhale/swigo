@@ -665,6 +665,28 @@ export const deleteOtpAdmin = async (req: Request, res: Response) => {
   }
 };
 
+// Clear Route
+export const clearAdminData = async (req: Request, res: Response) => {
+  try {
+    await prisma.review.deleteMany({});
+    await prisma.collabRequest.deleteMany({});
+    await prisma.bookingRequest.deleteMany({});
+    await prisma.tiffinInterest.deleteMany({});
+    await prisma.message.deleteMany({});
+    await prisma.room.deleteMany({});
+    await prisma.property.deleteMany({});
+    await prisma.tiffin.deleteMany({});
+    await prisma.supportTicket.deleteMany({});
+    await prisma.notification.deleteMany({});
+    await prisma.otp.deleteMany({});
+    await prisma.user.deleteMany({ where: { role: { not: 'admin' } } });
+
+    sendResponse(res, 200, 'Database records wiped successfully');
+  } catch (error: any) {
+    sendResponse(res, 500, error.message);
+  }
+};
+
 // 16. Seed Route
 export const seedAdminData = async (req: Request, res: Response) => {
   try {
