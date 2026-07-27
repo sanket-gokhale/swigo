@@ -5,6 +5,7 @@ import { getToken } from '../../services/auth.service';
 import { API_BASE } from '../../services/api';
 import toast from 'react-hot-toast';
 import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 import ChatModal from '@/components/chat/ChatModal';
 import Link from 'next/link';
 
@@ -213,6 +214,7 @@ export default function ProviderCollabsPage() {
           </div>
         )}
       </main>
+      <Footer />
     </div>
   );
 }

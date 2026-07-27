@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { isAuthenticated, getUser, logout } from '@/services/auth.service';
 import { useLocation } from '@/context/LocationContext';
 import toast from 'react-hot-toast';
+import Footer from '../../components/layout/Footer';
 
 export default function OwnerLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
@@ -76,7 +77,7 @@ export default function OwnerLayout({ children }: { children: React.ReactNode })
       }`}>
         <div className="p-8 border-b border-slate-50 flex items-center justify-between">
           <Link href="/dashboard" className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-2xl bg-primary flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-primary/20">S</div>
+            <img src="/logo.png" alt="Swigo Logo" className="h-10 w-10 object-contain" />
             <span className="font-bold text-xl tracking-tight text-slate-800">Swigo <span className="text-primary">Owner</span></span>
           </Link>
           <button 
@@ -156,6 +157,7 @@ export default function OwnerLayout({ children }: { children: React.ReactNode })
         <div className="p-4 sm:p-6 md:p-10 max-w-[1600px] mx-auto w-full flex-1">
           {children}
         </div>
+        <Footer />
       </main>
     </div>
   );

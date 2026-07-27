@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '../../components/layout/Navbar';
+import Footer from '../../components/layout/Footer';
 import { isAuthenticated, getToken, getUser, getProfile } from '../../services/auth.service';
 import { API_BASE } from '../../services/api';
 import RegisterKitchen from '../../components/dashboard/RegisterKitchen';
@@ -212,6 +213,7 @@ export default function DashboardPage() {
         </div>
 
       </main>
+      <Footer />
     </div>
   );
 }

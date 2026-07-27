@@ -14,8 +14,9 @@ export default function Footer() {
       <div className="max-w-[1400px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-16 mb-20">
           <div className="space-y-8">
-            <Link href="/" className="text-2xl font-black tracking-tighter uppercase">
-              Swigo
+            <Link href="/" className="inline-flex items-center gap-3">
+              <img src="/logo.png" alt="Swigo Logo" className="h-9 w-9 object-contain rounded-full bg-white/10 p-0.5" />
+              <span className="text-2xl font-black tracking-tighter uppercase text-white">Swigo</span>
             </Link>
             <p className="text-zinc-400 text-sm font-bold leading-relaxed max-w-xs">
               Providing premium stays and tiffin services with the speed and reliability you expect.
@@ -25,22 +26,41 @@ export default function Footer() {
           <div>
             <h4 className="text-xs font-black uppercase tracking-widest text-zinc-500 mb-8">Company</h4>
             <ul className="space-y-4">
-              {['About us', 'Our offerings', 'Newsroom', 'Investors', 'Blog', 'Careers'].map(item => (
-                <li key={item}>
-                  <Link href="#" className="text-sm font-bold text-zinc-300 hover:text-white transition-colors">{item}</Link>
+              {[
+                { name: 'About us', path: '/about' },
+                { name: 'Blog', path: '/blog' },
+                { name: 'Careers', path: '/careers' }
+              ].map(item => (
+                <li key={item.name}>
+                  <Link href={item.path} className="text-sm font-bold text-zinc-300 hover:text-white transition-colors">{item.name}</Link>
                 </li>
               ))}
             </ul>
           </div>
 
           <div>
-            <h4 className="text-xs font-black uppercase tracking-widest text-zinc-500 mb-8">Travel</h4>
+            <h4 className="text-xs font-black uppercase tracking-widest text-zinc-500 mb-8">Services To Join Us!</h4>
             <ul className="space-y-4">
-              {['Eat', 'Stays', 'Business', 'Tiffins'].map(item => (
-                <li key={item}>
-                  <Link href="#" className="text-sm font-bold text-zinc-300 hover:text-white transition-colors">{item}</Link>
-                </li>
-              ))}
+              <li>
+                <a
+                  href="https://swigo-owner-client.vercel.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-bold text-zinc-300 hover:text-white transition-colors"
+                >
+                  Property
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://swigo-tiffin-client.vercel.app"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-bold text-zinc-300 hover:text-white transition-colors"
+                >
+                  Tiffins/Kitchens
+                </a>
+              </li>
             </ul>
           </div>
 
@@ -70,7 +90,7 @@ export default function Footer() {
             ))}
           </div>
           <div className="flex gap-8 text-[10px] font-black uppercase tracking-widest text-zinc-500">
-            <span>© 2026 Swigo Technologies Inc.</span>
+            <span>© 2026 Swigo Technologies Inc (appflux.tech).</span>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
             <Link href="/help" className="hover:text-white transition-colors">Accessibility</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>

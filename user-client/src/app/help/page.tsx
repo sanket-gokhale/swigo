@@ -116,7 +116,7 @@ export default function HelpCenterPage() {
               href="/requests"
               className="inline-flex items-center px-8 py-3.5 rounded-full bg-primary text-white font-bold text-sm hover:opacity-90 transition-all shadow-lg shadow-primary/20"
             >
-              Contact Support
+              Contact Support - 8999307382
             </Link>
           </div>
         </section>

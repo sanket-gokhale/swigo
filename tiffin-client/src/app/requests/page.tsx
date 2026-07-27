@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 import { getToken } from '../../services/auth.service';
 import { API_BASE } from '../../services/api';
 import toast from 'react-hot-toast';
@@ -131,6 +132,7 @@ export default function IncomingRequestsPage() {
           )}
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

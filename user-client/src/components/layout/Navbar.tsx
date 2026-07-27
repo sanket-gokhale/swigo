@@ -74,10 +74,8 @@ const Navbar = () => {
         <div className="max-w-[1400px] mx-auto w-full px-6 flex items-center justify-between">
           
           <div className="flex items-center gap-16">
-            <Link href="/dashboard" className="flex items-center gap-2 group">
-              <div className="h-12 w-12 bg-primary rounded-2xl flex items-center justify-center text-white font-black shadow-xl shadow-primary/30 group-hover:rotate-12 transition-all">
-                S
-              </div>
+            <Link href="/dashboard" className="flex items-center gap-2.5 group">
+              <img src="/logo.png" alt="Swigo Logo" className="h-10 w-10 object-contain group-hover:scale-105 transition-transform" />
               <span className="text-2xl font-bold tracking-tight text-slate-900">Swigo</span>
             </Link>
 

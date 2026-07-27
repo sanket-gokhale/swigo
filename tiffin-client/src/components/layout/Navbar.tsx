@@ -70,7 +70,7 @@ export default function Navbar() {
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center gap-2">
-              <div className="h-8 w-8 rounded-lg bg-primary" />
+              <img src="/logo.png" alt="Swigo Logo" className="h-8 w-8 object-contain" />
               <span className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">Swigo</span>
             </Link>
           </div>
@@ -87,7 +87,7 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2 transition-transform hover:scale-105">
-            <div className="h-8 w-8 rounded-lg bg-primary" />
+            <img src="/logo.png" alt="Swigo Logo" className="h-8 w-8 object-contain" />
             <span className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">Swigo</span>
           </Link>
 

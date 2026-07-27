@@ -41,7 +41,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-12">
           <Link href="/" className="inline-flex items-center gap-3 transition-transform hover:scale-105">
-            <div className="h-12 w-12 rounded-2xl bg-primary flex items-center justify-center text-white font-bold text-2xl shadow-xl shadow-primary/20">S</div>
+            <img src="/logo.png" alt="Swigo Logo" className="h-12 w-12 object-contain" />
             <span className="text-3xl font-black tracking-tighter text-slate-800">Swigo</span>
           </Link>
           <h2 className="mt-10 text-4xl font-extrabold tracking-tight text-slate-800">
