@@ -32,7 +32,7 @@ export default function TiffinSignupPage() {
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <Link href="/" className="inline-flex items-center gap-2">
-            <img src="/logo.png" alt="Swigo Logo" className="h-10 w-10 object-contain" />
+            <img src="/logo.svg" alt="Swigo Logo" className="h-10 w-10 object-contain" />
             <span className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">Swigo Tiffins</span>
           </Link>
           <h2 className="mt-6 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">

@@ -1,0 +1,23 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- transparent background, 1:1 -->
+
+  <!-- soft lavender flourish behind mark -->
+  <circle cx="256" cy="256" r="185" fill="#E4E1FF" opacity="0.5"/>
+
+  <!-- === signature mark: search-glass + rooftop, scaled and centered === -->
+  <g transform="translate(126,96) scale(2.15)">
+    <!-- roof peak sitting on the lens -->
+    <path d="M 8 46 L 60 4 L 112 46" fill="none" stroke="#FF6B4A" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <!-- magnifying-glass lens -->
+    <circle cx="60" cy="70" r="46" fill="#FFFFFF" stroke="#1B1B3A" stroke-width="11"/>
+
+    <!-- little door inside the lens -->
+    <rect x="46" y="70" width="28" height="38" rx="8" fill="#C8FF4D" stroke="#1B1B3A" stroke-width="6"/>
+    <circle cx="66" cy="90" r="2.6" fill="#1B1B3A"/>
+
+    <!-- handle, ending in a pin-drop dot -->
+    <line x1="94" y1="104" x2="126" y2="136" stroke="#1B1B3A" stroke-width="14" stroke-linecap="round"/>
+    <circle cx="130" cy="140" r="9" fill="#FF6B4A"/>
+  </g>
+</svg>

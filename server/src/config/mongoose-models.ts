@@ -182,7 +182,7 @@ const SupportTicketSchema = new Schema({
 const SystemSettingSchema = new Schema({
   _id: { type: String, default: uuid },
   platformName: { type: String, default: 'Swigo' },
-  logoUrl: { type: String, default: '/logo.png' },
+  logoUrl: { type: String, default: '/logo.svg' },
   theme: { type: String, default: 'light' },
   emailHost: { type: String, default: 'smtp.gmail.com' },
   jwtExpiration: { type: String, default: '7d' },

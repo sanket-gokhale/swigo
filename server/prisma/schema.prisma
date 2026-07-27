@@ -265,7 +265,7 @@ model SupportTicket {
 model SystemSetting {
   id                      String   @id @default(uuid()) @map("_id")
   platformName            String   @default("Swigo")
-  logoUrl                 String   @default("/logo.png")
+  logoUrl                 String   @default("/logo.svg")
   theme                   String   @default("light") // light | dark
   emailHost               String   @default("smtp.gmail.com")
   jwtExpiration           String   @default("7d")

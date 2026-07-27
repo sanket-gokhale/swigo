@@ -15,7 +15,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           <div className="space-y-6">
             <Link href="/dashboard" className="inline-flex items-center gap-3">
-              <img src="/logo.png" alt="Swigo Logo" className="h-9 w-9 object-contain rounded-full bg-white/10 p-0.5" />
+              <img src="/logo.svg" alt="Swigo Logo" className="h-9 w-9 object-contain rounded-full bg-white/10 p-0.5" />
               <span className="text-2xl font-black tracking-tighter uppercase text-white">Swigo Tiffins</span>
             </Link>
             <p className="text-zinc-400 text-sm font-bold leading-relaxed max-w-xs">

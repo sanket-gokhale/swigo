@@ -77,7 +77,7 @@ export default function OwnerLayout({ children }: { children: React.ReactNode })
       }`}>
         <div className="p-8 border-b border-slate-50 flex items-center justify-between">
           <Link href="/dashboard" className="flex items-center gap-3">
-            <img src="/logo.png" alt="Swigo Logo" className="h-10 w-10 object-contain" />
+            <img src="/logo.svg" alt="Swigo Logo" className="h-10 w-10 object-contain" />
             <span className="font-bold text-xl tracking-tight text-slate-800">Swigo <span className="text-primary">Owner</span></span>
           </Link>
           <button 

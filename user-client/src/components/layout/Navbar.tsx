@@ -75,7 +75,7 @@ const Navbar = () => {
           
           <div className="flex items-center gap-16">
             <Link href="/dashboard" className="flex items-center gap-2.5 group">
-              <img src="/logo.png" alt="Swigo Logo" className="h-10 w-10 object-contain group-hover:scale-105 transition-transform" />
+              <img src="/logo.svg" alt="Swigo Logo" className="h-10 w-10 object-contain group-hover:scale-105 transition-transform" />
               <span className="text-2xl font-bold tracking-tight text-slate-900">Swigo</span>
             </Link>
 
