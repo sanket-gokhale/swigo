@@ -1,21 +1,53 @@
 'use client';
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { forgotPassword } from '@/services/auth.service';
+import { useRouter } from 'next/navigation';
+import { forgotPassword, verifyOtp, resetPassword } from '@/services/auth.service';
 import toast from 'react-hot-toast';
 
 export default function ForgotPasswordPage() {
+  const [step, setStep] = useState<'email' | 'otp' | 'password' | 'success'>('email');
   const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
       await forgotPassword(email);
-      setSubmitted(true);
-      toast.success('Reset link sent to your email');
+      setStep('otp');
+      toast.success('OTP sent to your email');
+    } catch (err: any) {
+      toast.error(err.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOtpSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await verifyOtp(email, otp);
+      setStep('password');
+      toast.success('OTP verified successfully');
+    } catch (err: any) {
+      toast.error(err.message || 'Invalid OTP');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await resetPassword(email, otp, newPassword);
+      setStep('success');
+      toast.success('Password updated successfully');
     } catch (err: any) {
       toast.error(err.message || 'Something went wrong');
     } finally {
@@ -35,12 +67,15 @@ export default function ForgotPasswordPage() {
             Reset Password
           </h2>
           <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-            {submitted ? "Check your email for the reset link" : "Enter your email to receive a recovery link"}
+            {step === 'email' && 'Enter your email to receive an OTP'}
+            {step === 'otp' && 'Enter the OTP sent to your email'}
+            {step === 'password' && 'Enter your new password'}
+            {step === 'success' && 'Your password has been successfully updated'}
           </p>
         </div>
 
-        {!submitted ? (
-          <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        {step === 'email' && (
+          <form className="mt-8 space-y-6" onSubmit={handleEmailSubmit}>
             <div className="rounded-md shadow-sm">
               <label htmlFor="email-address" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 Email address
@@ -57,30 +92,99 @@ export default function ForgotPasswordPage() {
                 placeholder="name@example.com"
               />
             </div>
-
             <div>
               <button
                 type="submit"
                 disabled={loading}
                 className="w-full rounded-xl bg-zinc-900 px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-zinc-800 disabled:opacity-50 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
               >
-                {loading ? 'Sending...' : 'Send Reset Link'}
+                {loading ? 'Sending...' : 'Send OTP'}
               </button>
             </div>
           </form>
-        ) : (
-          <div className="mt-8 text-center">
-            <Link href="/login" className="font-medium text-primary hover:underline">
-              Back to login
-            </Link>
+        )}
+
+        {step === 'otp' && (
+          <form className="mt-8 space-y-6" onSubmit={handleOtpSubmit}>
+            <div className="rounded-md shadow-sm">
+              <label htmlFor="otp" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                One-Time Password (OTP)
+              </label>
+              <input
+                id="otp"
+                name="otp"
+                type="text"
+                required
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                className="mt-1 block w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-zinc-900 placeholder-zinc-400 focus:border-primary focus:ring-primary dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50 sm:text-sm tracking-widest text-center text-xl"
+                placeholder="123456"
+                maxLength={6}
+              />
+            </div>
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded-xl bg-zinc-900 px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-zinc-800 disabled:opacity-50 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
+              >
+                {loading ? 'Verifying...' : 'Verify OTP'}
+              </button>
+            </div>
+          </form>
+        )}
+
+        {step === 'password' && (
+          <form className="mt-8 space-y-6" onSubmit={handlePasswordSubmit}>
+            <div className="rounded-md shadow-sm">
+              <label htmlFor="new-password" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                New Password
+              </label>
+              <input
+                id="new-password"
+                name="new-password"
+                type="password"
+                required
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="mt-1 block w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-zinc-900 placeholder-zinc-400 focus:border-primary focus:ring-primary dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50 sm:text-sm"
+                placeholder="Enter new password"
+              />
+            </div>
+            <div>
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full rounded-xl bg-zinc-900 px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-zinc-800 disabled:opacity-50 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
+              >
+                {loading ? 'Updating...' : 'Update Password'}
+              </button>
+            </div>
+          </form>
+        )}
+
+        {step === 'success' && (
+          <div className="mt-8 text-center space-y-4">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
+              <svg className="h-8 w-8 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <div>
+              <Link href="/login" className="inline-block w-full rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-primary/90">
+                Return to Login
+              </Link>
+            </div>
           </div>
         )}
 
-        <div className="text-center">
-          <Link href="/login" className="text-sm font-medium text-zinc-600 hover:text-primary dark:text-zinc-400">
-            Remember your password? Sign in
-          </Link>
-        </div>
+        {step !== 'success' && (
+          <div className="text-center">
+            <Link href="/login" className="text-sm font-medium text-zinc-600 hover:text-primary dark:text-zinc-400">
+              Remember your password? Sign in
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

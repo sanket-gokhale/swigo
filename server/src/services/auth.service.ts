@@ -52,36 +52,64 @@ export const forgotPassword = async (email: string) => {
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) throw new Error('User not found');
 
-  const resetToken = crypto.randomBytes(20).toString('hex');
-  await prisma.user.update({
-    where: { id: user.id },
+  // Generate a 6-digit OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  
+  // Set expiration to 15 minutes from now
+  const expiresAt = new Date(Date.now() + 15 * 60000);
+
+  // Clean up any existing OTPs for this email to prevent spam/confusion
+  await prisma.otp.deleteMany({
+    where: { email }
+  });
+
+  // Store the new OTP
+  await prisma.otp.create({
     data: {
-      resetPasswordToken: resetToken,
-      resetPasswordExpires: new Date(Date.now() + 3600000) // 1 hour
+      email,
+      otp,
+      expiresAt
     }
   });
 
-  return resetToken;
+  return otp;
 };
 
-export const resetPassword = async (token: string, newPassword: string) => {
-  const user = await prisma.user.findFirst({
+export const verifyOtp = async (email: string, otp: string) => {
+  const otpRecord = await prisma.otp.findFirst({
     where: {
-      resetPasswordToken: token,
-      resetPasswordExpires: { gt: new Date() }
+      email,
+      otp,
+      expiresAt: { gt: new Date() } // Ensure it hasn't expired
     }
   });
 
-  if (!user) throw new Error('Password reset token is invalid or has expired');
+  if (!otpRecord) {
+    throw new Error('Invalid or expired OTP');
+  }
+
+  return true;
+};
+
+export const resetPassword = async (email: string, otp: string, newPassword: string) => {
+  // Verify OTP again before resetting the password for security
+  await verifyOtp(email, otp);
+
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) throw new Error('User not found');
 
   const hashedPassword = await bcrypt.hash(newPassword, 10);
+  
   const updatedUser = await prisma.user.update({
     where: { id: user.id },
     data: {
       password: hashedPassword,
-      resetPasswordToken: null,
-      resetPasswordExpires: null
     }
+  });
+
+  // Delete the OTP so it cannot be used again
+  await prisma.otp.deleteMany({
+    where: { email }
   });
 
   const userResponse = { ...updatedUser, _id: updatedUser.id };

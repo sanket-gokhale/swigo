@@ -91,24 +91,16 @@ export default function LoginPage() {
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 rounded border-zinc-300 text-primary focus:ring-primary dark:border-zinc-800 dark:bg-zinc-900"
-              />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-zinc-700 dark:text-zinc-300">
-                Remember me
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <Link href="/forgot-password" title="Forgot Password" className="font-medium text-primary hover:text-primary/80">
-                Forgot your password?
-              </Link>
-            </div>
+          <div className="flex items-center">
+            <input
+              id="remember-me"
+              name="remember-me"
+              type="checkbox"
+              className="h-4 w-4 rounded border-zinc-300 text-primary focus:ring-primary dark:border-zinc-800 dark:bg-zinc-900"
+            />
+            <label htmlFor="remember-me" className="ml-2 block text-sm text-zinc-700 dark:text-zinc-300">
+              Remember me
+            </label>
           </div>
 
           <div>
@@ -122,12 +114,6 @@ export default function LoginPage() {
           </div>
         </form>
 
-        <p className="text-center text-sm text-zinc-600 dark:text-zinc-400">
-          Don't have an account?{' '}
-          <Link href="/signup" className="font-medium text-primary hover:text-primary/80">
-            Create an account
-          </Link>
-        </p>
       </div>
     </div>
   );
