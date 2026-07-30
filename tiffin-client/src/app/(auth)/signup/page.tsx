@@ -79,6 +79,7 @@ export default function TiffinSignupPage() {
                 className="mt-1 block w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-zinc-900 focus:border-orange-500 focus:ring-orange-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50 sm:text-sm appearance-none"
               >
                 <option value="" disabled>Select your city</option>
+                <option value="Nagpur">Nagpur</option>
                 <option value="Pune">Pune</option>
                 <option value="Mumbai">Mumbai</option>
                 <option value="Bangalore">Bangalore</option>
