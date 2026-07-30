@@ -9,6 +9,7 @@ export default function TiffinSignupPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [city, setCity] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -17,7 +18,7 @@ export default function TiffinSignupPage() {
     setLoading(true);
     try {
       // Force role as 'tiffin'
-      await register(name, email, password, 'tiffin');
+      await register(name, email, password, city, 'tiffin');
       toast.success('Tiffin Provider account created successfully!');
       router.push('/dashboard');
     } catch (err: any) {
@@ -66,6 +67,24 @@ export default function TiffinSignupPage() {
                 className="mt-1 block w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-zinc-900 focus:border-orange-500 focus:ring-orange-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50 sm:text-sm"
                 placeholder="kitchen@example.com"
               />
+            </div>
+            <div>
+              <label htmlFor="city" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">City</label>
+              <select
+                id="city"
+                name="city"
+                required
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="mt-1 block w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-zinc-900 focus:border-orange-500 focus:ring-orange-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-50 sm:text-sm appearance-none"
+              >
+                <option value="" disabled>Select your city</option>
+                <option value="Pune">Pune</option>
+                <option value="Mumbai">Mumbai</option>
+                <option value="Bangalore">Bangalore</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Hyderabad">Hyderabad</option>
+              </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">Password</label>

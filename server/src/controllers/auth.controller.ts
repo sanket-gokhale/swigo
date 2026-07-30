@@ -5,8 +5,8 @@ import { sendResetPasswordEmail } from '../utils/email';
 
 export const registerUser = async (req: Request, res: Response) => {
   try {
-    const { name, email, password, role } = req.body;
-    const result = await register(name, email, password, role);
+    const { name, email, password, city, role } = req.body;
+    const result = await register(name, email, password, city, role);
     sendResponse(res, 201, 'User registered successfully', result);
   } catch (error: any) {
     sendResponse(res, 400, error.message);

@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import prisma from '../config/prisma';
 import { JWT_SECRET } from '../config/env';
 
-export const register = async (name: string, email: string, password: string, role: string = 'user') => {
+export const register = async (name: string, email: string, password: string, city: string = 'Pune', role: string = 'user') => {
   const existingUser = await prisma.user.findUnique({ where: { email } });
   if (existingUser) {
     throw new Error('User already exists with this email');
@@ -15,6 +15,7 @@ export const register = async (name: string, email: string, password: string, ro
       name,
       email,
       password: hashedPassword,
+      city,
       role
     }
   });

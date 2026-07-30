@@ -9,17 +9,19 @@ export default function OwnerSignupPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [city, setCity] = useState('');
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     setLoading(true);
     try {
       // Force role as 'owner'
-      await register(name, email, password, 'owner');
-      toast.success('Property Owner account created!');
-      router.push('/dashboard');
+      await register(name, email, password, city, 'owner');
+      router.push('/login?registered=true');
     } catch (err: any) {
       toast.error(err.message || 'Registration failed');
     } finally {
@@ -67,6 +69,24 @@ export default function OwnerSignupPage() {
                   className="mt-1 block w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-zinc-900 transition-all focus:border-primary focus:ring-primary dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-50 sm:text-sm"
                   placeholder="owner@example.com"
                 />
+              </div>
+              <div>
+                <label htmlFor="city" className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">City</label>
+                <select
+                  id="city"
+                  name="city"
+                  required
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="mt-1 block w-full rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-zinc-900 transition-all focus:border-primary focus:ring-primary dark:border-zinc-800 dark:bg-zinc-800 dark:text-zinc-50 sm:text-sm appearance-none"
+                >
+                  <option value="" disabled>Select your city</option>
+                  <option value="Pune">Pune</option>
+                  <option value="Mumbai">Mumbai</option>
+                  <option value="Bangalore">Bangalore</option>
+                  <option value="Delhi">Delhi</option>
+                  <option value="Hyderabad">Hyderabad</option>
+                </select>
               </div>
               <div>
                 <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">Password</label>
