@@ -9,6 +9,7 @@ export default function AuthModal() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [city, setCity] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -23,7 +24,7 @@ export default function AuthModal() {
       if (isLogin) {
         await login(email, password);
       } else {
-        await register(name, email, password);
+        await register(name, email, password, city);
       }
       
       closeModal();
@@ -59,16 +60,35 @@ export default function AuthModal() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
-            <div>
-              <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-1">Full Name</label>
-              <input
-                type="text"
-                required
-                className="w-full rounded-xl border border-zinc-200 bg-zinc-50 p-3 outline-none focus:ring-2 focus:ring-primary dark:border-zinc-800 dark:bg-zinc-800"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
+            <>
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-1">Full Name</label>
+                <input
+                  type="text"
+                  required
+                  className="w-full rounded-xl border border-zinc-200 bg-zinc-50 p-3 outline-none focus:ring-2 focus:ring-primary dark:border-zinc-800 dark:bg-zinc-800"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-1">City</label>
+                <select
+                  required
+                  className="w-full rounded-xl border border-zinc-200 bg-zinc-50 p-3 outline-none focus:ring-2 focus:ring-primary dark:border-zinc-800 dark:bg-zinc-800 appearance-none"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                >
+                  <option value="" disabled>Select your city</option>
+                  <option value="Nagpur">Nagpur</option>
+                  <option value="Pune">Pune</option>
+                  <option value="Mumbai">Mumbai</option>
+                  <option value="Bangalore">Bangalore</option>
+                  <option value="Delhi">Delhi</option>
+                  <option value="Hyderabad">Hyderabad</option>
+                </select>
+              </div>
+            </>
           )}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-1">Email</label>
