@@ -38,17 +38,25 @@ export default function Footer() {
             </ul>
           </div>
 
-          <div>
-            <h4 className="text-xs font-black uppercase tracking-widest text-zinc-500 mb-8">Services To Join Us!</h4>
-            <ul className="space-y-4">
+          <div className="bg-primary/5 border border-primary/20 rounded-3xl p-6 -mt-6 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 blur-3xl rounded-full -mr-16 -mt-16 transition-transform group-hover:scale-150 duration-700"></div>
+            <h4 className="text-xs font-black uppercase tracking-widest text-primary mb-6 flex items-center gap-2 relative z-10">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+              </span>
+              Services To Join Us!
+            </h4>
+            <ul className="space-y-3 relative z-10">
               <li>
                 <a
                   href="https://swigo-owner-client.vercel.app"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm font-bold text-zinc-300 hover:text-white transition-colors"
+                  className="group/link flex items-center justify-between text-sm font-bold text-zinc-100 bg-black/40 hover:bg-primary/10 px-4 py-3 rounded-xl transition-all border border-white/5 hover:border-primary/30"
                 >
-                  Property
+                  <span>Property</span>
+                  <span className="opacity-0 group-hover/link:opacity-100 transform -translate-x-2 group-hover/link:translate-x-0 transition-all text-primary">→</span>
                 </a>
               </li>
               <li>
@@ -56,9 +64,10 @@ export default function Footer() {
                   href="https://swigo-tiffin-client.vercel.app"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm font-bold text-zinc-300 hover:text-white transition-colors"
+                  className="group/link flex items-center justify-between text-sm font-bold text-zinc-100 bg-black/40 hover:bg-primary/10 px-4 py-3 rounded-xl transition-all border border-white/5 hover:border-primary/30"
                 >
-                  Tiffins/Kitchens
+                  <span>Tiffins/Kitchens</span>
+                  <span className="opacity-0 group-hover/link:opacity-100 transform -translate-x-2 group-hover/link:translate-x-0 transition-all text-primary">→</span>
                 </a>
               </li>
             </ul>
@@ -69,6 +78,7 @@ export default function Footer() {
             <ul className="space-y-4">
               {[
                 { name: 'Help Center', path: '/help' },
+                { name: 'Email Support (swigo.official@gmail.com)', path: 'mailto:swigo.official@gmail.com' },
                 { name: 'Safety', path: '/safety' },
                 { name: 'Terms', path: '/terms' },
                 { name: 'Privacy', path: '/privacy' }

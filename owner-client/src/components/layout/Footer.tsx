@@ -69,7 +69,12 @@ export default function Footer() {
           <div>
             <h4 className="text-xs font-black uppercase tracking-widest text-zinc-500 mb-6">Support &amp; Legal</h4>
             <ul className="space-y-3">
-              {['Help Center', 'Safety', 'Terms of Service', 'Privacy Policy'].map(item => (
+              <li>
+                <a href="mailto:swigo.official@gmail.com" className="text-sm font-bold text-zinc-400 hover:text-white transition-colors">
+                  Help Center (swigo.official@gmail.com)
+                </a>
+              </li>
+              {['Safety', 'Terms of Service', 'Privacy Policy'].map(item => (
                 <li key={item}>
                   <span className="text-sm font-bold text-zinc-400">{item}</span>
                 </li>

@@ -111,13 +111,19 @@ export default function HelpCenterPage() {
           <p className="text-slate-400 max-w-xl mx-auto font-medium">
             If you cannot find the answer you&apos;re looking for, please contact our support team through the Contact Us page.
           </p>
-          <div className="pt-2">
+          <div className="pt-2 flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Link
               href="/requests"
               className="inline-flex items-center px-8 py-3.5 rounded-full bg-primary text-white font-bold text-sm hover:opacity-90 transition-all shadow-lg shadow-primary/20"
             >
               Contact Support - 8999307382
             </Link>
+            <a
+              href="mailto:swigo.official@gmail.com"
+              className="inline-flex items-center px-8 py-3.5 rounded-full bg-slate-800 text-white font-bold text-sm hover:bg-slate-700 transition-all border border-slate-700 shadow-lg"
+            >
+              Email - swigo.official@gmail.com
+            </a>
           </div>
         </section>
       </main>
