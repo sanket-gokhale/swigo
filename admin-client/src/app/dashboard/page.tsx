@@ -1155,6 +1155,12 @@ function DashboardContent() {
                               Suspend
                             </button>
                             <button 
+                              onClick={() => handleUserDelete(p._id)}
+                              className="px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-bold text-red-600 hover:bg-red-50 cursor-pointer"
+                            >
+                              Delete
+                            </button>
+                            <button 
                               onClick={async () => {
                                 try {
                                   const details = await adminService.fetchTiffinDetails(p._id);

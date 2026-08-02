@@ -143,12 +143,7 @@ export default function Navbar() {
                       >
                         <span>📊</span> Dashboard
                       </Link>
-                      <Link
-                        href="/user/profile"
-                        className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-zinc-600 transition-colors hover:bg-zinc-50 hover:text-primary dark:text-zinc-400 dark:hover:bg-zinc-800"
-                      >
-                        <span>👤</span> Profile Settings
-                      </Link>
+
                       <button
                         onClick={handleLogout}
                         className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
