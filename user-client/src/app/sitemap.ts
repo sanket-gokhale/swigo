@@ -1,27 +1,56 @@
 import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const baseUrl = "https://swigo.me";
+
   return [
     {
-      url: "https://swigo.me",
+      url: baseUrl,
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1,
     },
     {
-      url: "https://swigo.me/pgs",
+      url: `${baseUrl}/explore`,
       lastModified: new Date(),
+      changeFrequency: "daily",
       priority: 0.9,
     },
     {
-      url: "https://swigo.me/about",
+      url: `${baseUrl}/about`,
       lastModified: new Date(),
+      changeFrequency: "monthly",
       priority: 0.8,
     },
     {
-      url: "https://swigo.me/contact",
+      url: `${baseUrl}/contact`,
       lastModified: new Date(),
+      changeFrequency: "monthly",
       priority: 0.8,
+    },
+    {
+      url: `${baseUrl}/help-center`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    {
+      url: `${baseUrl}/privacy`,
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/terms`,
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.5,
+    },
+    {
+      url: `${baseUrl}/safety`,
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.5,
     },
   ];
 }
