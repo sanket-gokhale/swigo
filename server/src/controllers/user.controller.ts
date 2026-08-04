@@ -21,7 +21,7 @@ export const getProfile = async (req: AuthRequest, res: Response) => {
 export const updateProfile = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user?.id;
-    const { name, phone, city, bio } = req.body;
+    const { name, phone, city, bio, businessName, kitchenName } = req.body;
 
     const updatedUser = await prisma.user.update({
       where: { id: userId },
@@ -29,9 +29,18 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
         name,
         phone: phone || null,
         city: city || null,
-        bio: bio || null
+        bio: bio || null,
+        businessName: businessName !== undefined ? businessName : undefined,
+        kitchenName: kitchenName !== undefined ? kitchenName : undefined
       }
     });
+
+    if (kitchenName) {
+      await prisma.tiffin.updateMany({
+        where: { providerId: userId },
+        data: { name: kitchenName }
+      });
+    }
 
     const userResponse = { ...updatedUser, _id: updatedUser.id };
     delete (userResponse as any).password;

@@ -100,6 +100,13 @@ export const updateUser = async (req: Request, res: Response) => {
       select: { id: true, name: true, email: true, phone: true, role: true, city: true, status: true, businessName: true, kitchenName: true, bio: true, createdAt: true }
     });
     
+    if (kitchenName) {
+      await prisma.tiffin.updateMany({
+        where: { providerId: id },
+        data: { name: kitchenName }
+      });
+    }
+
     sendResponse(res, 200, 'User updated successfully', { ...updated, _id: updated.id });
   } catch (error: any) {
     sendResponse(res, 400, error.message);

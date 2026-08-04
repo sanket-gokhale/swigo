@@ -107,6 +107,14 @@ export const updateTiffinById = async (id: string, data: any) => {
     data: updateData,
     include: { provider: { select: { id: true, name: true, email: true } } }
   });
+
+  if (updateData.name && updated.providerId) {
+    await prisma.user.update({
+      where: { id: updated.providerId },
+      data: { kitchenName: updateData.name }
+    });
+  }
+
   return { ...updated, _id: updated.id, provider: updated.provider || updated.providerId };
 };
 
@@ -127,6 +135,14 @@ export const createTiffin = async (data: any) => {
     },
     include: { provider: { select: { id: true, name: true, email: true } } }
   });
+
+  if (data.name) {
+    await prisma.user.update({
+      where: { id: providerId },
+      data: { kitchenName: data.name }
+    });
+  }
+
   return { ...tiffin, _id: tiffin.id, provider: tiffin.provider || tiffin.providerId };
 };
 
