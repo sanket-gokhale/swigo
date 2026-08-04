@@ -3,12 +3,24 @@ import '../styles/globals.css';
 import React from 'react';
 
 export const metadata: Metadata = {
-  title: 'Swigo - Food & Property Delivery',
-  description: 'Swigo is your ultimate platform for food delivery, tiffin services, and property rentals. Fast, reliable, and convenient.',
-  keywords: 'swigo, food delivery, tiffin service, property rental, fast delivery',
+  title: {
+    default: "Swigo - Find PGs, Hostels & Flats",
+    template: "%s | Swigo",
+  },
+  description:
+    "Find verified PGs, hostels, flats, and homestays across India. Book your next stay with Swigo.",
+  keywords: [
+    "PG Booking",
+    "Hostel Booking",
+    "Flats",
+    "Homestay",
+    "Student PG",
+    "Swigo",
+    "Rental Rooms",
+  ],
   openGraph: {
-    title: 'Swigo - Food & Property Delivery',
-    description: 'Swigo is your ultimate platform for food delivery, tiffin services, and property rentals.',
+    title: 'Swigo - Find PGs, Hostels & Flats',
+    description: 'Find verified PGs, hostels, flats, and homestays across India. Book your next stay with Swigo.',
     url: 'https://swigo.me',
     siteName: 'Swigo',
     locale: 'en_US',
