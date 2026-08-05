@@ -41,6 +41,11 @@ export default function PropertyCard({ property }: { property: Property }) {
               <h3 className="text-xl font-extrabold text-white truncate">
                 {property.title}
               </h3>
+              {property.address && (
+                <p className="text-sm font-medium text-slate-400 mt-1 truncate">
+                  {property.address}
+                </p>
+              )}
               {property.rooms && property.rooms.length > 0 && (() => {
                 const totalRooms = property.rooms.length;
                 const availableRooms = property.rooms.filter((r: any) => r.availability === 'Available').length;

@@ -18,7 +18,7 @@
 
 @layer base {
   body {
-    @apply bg-white text-slate-700 antialiased;
+    @apply bg-white text-slate-700 antialiased overflow-x-hidden;
   }
 }
 
