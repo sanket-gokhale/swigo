@@ -325,11 +325,14 @@ export default function PropertyDetailPage() {
                     <span className="text-sm font-bold text-zinc-500 ml-2">/ month</span>
                   </div>
                   
+                  <div className="mb-8 p-4 rounded-2xl bg-white/5 border border-white/10">
+                    <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Property Address</p>
+                    <p className="text-sm text-zinc-300 leading-relaxed">
+                      {[property.address, property.area, property.city, property.pincode].filter(Boolean).join(', ') || property.location}
+                    </p>
+                  </div>
+                  
                   <div className="space-y-5 mb-10">
-                    <div className="flex justify-between text-sm font-medium">
-                      <span className="text-zinc-500">Security Deposit</span>
-                      <span className="text-zinc-100 font-bold">₹{property.price * 2}</span>
-                    </div>
                     <div className="flex justify-between text-sm font-medium">
                       <span className="text-zinc-500">Electricity</span>
                       <span className="text-zinc-100 font-bold">{property.electricityBill}</span>
@@ -340,8 +343,8 @@ export default function PropertyDetailPage() {
                     </div>
                     <hr className="border-zinc-800" />
                     <div className="flex justify-between text-xl font-bold text-zinc-50">
-                      <span>Initial Total</span>
-                      <span className="text-primary">₹{(property.price * 3)}</span>
+                      <span>Total</span>
+                      <span className="text-primary">₹{property.price}</span>
                     </div>
                   </div>
 

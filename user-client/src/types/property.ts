@@ -4,6 +4,9 @@ export interface Property {
   name?: string; // fallback if needed
   description: string;
   location: string;
+  address?: string;
+  area?: string;
+  pincode?: string;
   city?: string; // fallback
   price: number;
   type: 'PG' | 'Flat' | 'Homestay' | 'Hostel' | 'Room';
