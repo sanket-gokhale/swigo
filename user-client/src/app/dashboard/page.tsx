@@ -249,9 +249,11 @@ export default function DashboardPage() {
                 <Link href="/search" className="text-sm font-bold text-primary hover:underline">View map</Link>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory">
                 {nearbyProperties.slice(0, 3).map(property => (
-                  <PropertyCard key={property._id} property={property} />
+                  <div key={property._id} className="min-w-[85vw] md:min-w-[calc(33.333%-1rem)] snap-start flex-none">
+                    <PropertyCard property={property} />
+                  </div>
                 ))}
               </div>
             </section>
@@ -270,9 +272,9 @@ export default function DashboardPage() {
                 <Link href="/food" className="text-sm font-bold text-primary hover:underline self-start sm:self-auto">View menu</Link>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8">
+              <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory">
                 {nearbyTiffins.slice(0, 3).map(tiffin => (
-                  <div key={tiffin._id} className="card-modern overflow-hidden group rounded-2xl md:rounded-[2.5rem]">
+                  <div key={tiffin._id} className="min-w-[85vw] md:min-w-[calc(33.333%-1rem)] snap-start flex-none card-modern overflow-hidden group rounded-2xl md:rounded-[2.5rem]">
                     <div className="aspect-[1.5/1] relative overflow-hidden">
                       <img src={tiffin.images?.[0] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="%230f172a"/><circle cx="200" cy="120" r="45" fill="%23ff5a5f"/><text x="50%" y="82%" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-family="sans-serif" font-size="14" font-weight="bold">Homely Tiffin Service</text></svg>'} alt={tiffin.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
                       <div className="absolute top-3 right-3 md:top-4 md:right-4 px-3 py-1 md:px-4 md:py-1 bg-white/90 backdrop-blur-md rounded-full text-[10px] md:text-xs font-black text-slate-900 shadow-xl">
@@ -298,12 +300,14 @@ export default function DashboardPage() {
               <Link href="/search" className="text-sm font-bold text-primary hover:underline">Explore all</Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory">
               {loading ? (
-                [1, 2, 3].map(i => <div key={i} className="aspect-[1.5/1] rounded-[2rem] bg-slate-50 animate-pulse" />)
+                [1, 2, 3].map(i => <div key={i} className="min-w-[85vw] md:min-w-[calc(33.333%-1rem)] snap-start flex-none aspect-[1.5/1] rounded-[2rem] bg-slate-50 animate-pulse" />)
               ) : (
                 properties.slice(0, 3).map(property => (
-                  <PropertyCard key={property._id} property={property} />
+                  <div key={property._id} className="min-w-[85vw] md:min-w-[calc(33.333%-1rem)] snap-start flex-none">
+                    <PropertyCard property={property} />
+                  </div>
                 ))
               )}
             </div>
@@ -318,12 +322,14 @@ export default function DashboardPage() {
               <Link href="/search" className="text-sm font-bold text-primary hover:underline">Explore all</Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory">
               {loading ? (
-                [1, 2, 3].map(i => <div key={i} className="aspect-[1.5/1] rounded-[2rem] bg-slate-50 animate-pulse" />)
+                [1, 2, 3].map(i => <div key={i} className="min-w-[85vw] md:min-w-[calc(33.333%-1rem)] snap-start flex-none aspect-[1.5/1] rounded-[2rem] bg-slate-50 animate-pulse" />)
               ) : (
                 properties.slice(3, 6).map(property => (
-                  <PropertyCard key={property._id} property={property} />
+                  <div key={property._id} className="min-w-[85vw] md:min-w-[calc(33.333%-1rem)] snap-start flex-none">
+                    <PropertyCard property={property} />
+                  </div>
                 ))
               )}
             </div>

@@ -48,6 +48,10 @@ export default function TiffinProfilePage() {
 
   const addImageUrl = () => {
     if (!newImageUrl.trim()) return;
+    if (images.length >= 1) {
+      toast.error('You can only add 1 image');
+      return;
+    }
     setImages([...images, newImageUrl.trim()]);
     setNewImageUrl('');
     toast.success('Photo added!');
@@ -59,6 +63,10 @@ export default function TiffinProfilePage() {
   };
 
   const addCuratedImage = (url: string) => {
+    if (images.length >= 1) {
+      toast.error('You can only add 1 image');
+      return;
+    }
     if (images.includes(url)) {
       toast.error('Photo already added!');
       return;

@@ -77,10 +77,10 @@ export default function AddPropertyPage() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const selectedFiles = Array.from(e.target.files);
-      setImages(prev => [...prev, ...selectedFiles].slice(0, 5));
+      setImages(prev => [...prev, ...selectedFiles].slice(0, 3));
       
       const newPreviews = selectedFiles.map(file => URL.createObjectURL(file));
-      setPreviews(prev => [...prev, ...newPreviews].slice(0, 5));
+      setPreviews(prev => [...prev, ...newPreviews].slice(0, 3));
     }
   };
 
@@ -374,7 +374,7 @@ export default function AddPropertyPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">Property Images (Max 5)</label>
+            <label className="block text-sm font-semibold text-zinc-700 dark:text-zinc-300">Property Images (Max 3)</label>
             <div className="mt-2 grid grid-cols-5 gap-4">
               {previews.map((preview, index) => (
                 <div key={index} className="relative aspect-square rounded-xl overflow-hidden group">
@@ -388,7 +388,7 @@ export default function AddPropertyPage() {
                   </button>
                 </div>
               ))}
-              {previews.length < 5 && (
+              {previews.length < 3 && (
                 <label className="aspect-square rounded-xl border-2 border-dashed border-zinc-200 dark:border-zinc-800 flex flex-col items-center justify-center cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors">
                   <span className="text-2xl text-zinc-400">+</span>
                   <span className="text-[10px] text-zinc-400 mt-1">Upload</span>
