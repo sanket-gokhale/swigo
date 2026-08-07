@@ -6,10 +6,10 @@ import { Property } from '../../types/property';
 
 export default function PropertyCard({ property }: { property: Property }) {
   return (
-    <Link href={`/property/${property._id}`} className="group block">
-      <div className="card-modern overflow-hidden">
+    <Link href={`/property/${property._id}`} className="group block h-full">
+      <div className="card-modern overflow-hidden h-full flex flex-col">
         {/* Image Container */}
-        <div className="relative h-56 md:h-64 overflow-hidden rounded-[1.5rem] m-2">
+        <div className="relative h-56 md:h-64 shrink-0 overflow-hidden rounded-[1.5rem] m-2">
           <img 
             src={property.images?.[0] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="%2318181b"/><path d="M160 180h80v60h-80zM120 240h160v-90H120zM200 80l-90 70h180z" fill="%23ff5a5f"/><text x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="%23a1a1aa" font-family="sans-serif" font-size="14" font-weight="bold">No Image</text></svg>'} 
             alt={property.title}
@@ -31,7 +31,7 @@ export default function PropertyCard({ property }: { property: Property }) {
         </div>
 
         {/* Content */}
-        <div className="p-6 pt-2">
+        <div className="p-6 pt-2 flex flex-col flex-1">
           <div className="flex justify-between items-start mb-2">
             <div>
               <div className="flex items-center gap-1 mb-1">
@@ -65,7 +65,7 @@ export default function PropertyCard({ property }: { property: Property }) {
             </div>
           </div>
           
-          <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/5">
+          <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
             <div>
               <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none mb-1">Starting at</p>
               <p className="text-2xl font-black text-white">₹{property.price.toLocaleString()}</p>

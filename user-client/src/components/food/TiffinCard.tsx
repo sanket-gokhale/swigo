@@ -19,8 +19,8 @@ interface TiffinCardProps {
 
 export default function TiffinCard({ tiffin }: TiffinCardProps) {
   return (
-    <div className="group relative bg-white rounded-[1.5rem] md:rounded-[2.5rem] border border-slate-100 p-3 md:p-4 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-200/50 hover:-translate-y-2">
-      <div className="relative h-52 md:h-60 w-full overflow-hidden rounded-[1.2rem] md:rounded-[2rem]">
+    <div className="group relative bg-white rounded-[1.5rem] md:rounded-[2.5rem] border border-slate-100 p-3 md:p-4 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-200/50 hover:-translate-y-2 h-full flex flex-col">
+      <div className="relative h-52 md:h-60 w-full shrink-0 overflow-hidden rounded-[1.2rem] md:rounded-[2rem]">
         <img 
           src={tiffin.images?.[0] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="%230f172a"/><circle cx="200" cy="120" r="45" fill="%23ff5a5f"/><text x="50%" y="82%" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-family="sans-serif" font-size="14" font-weight="bold">Homely Tiffin Service</text></svg>'} 
           alt={tiffin.name} 
@@ -36,7 +36,7 @@ export default function TiffinCard({ tiffin }: TiffinCardProps) {
         </div>
       </div>
 
-      <div className="p-3 md:p-6">
+      <div className="p-3 md:p-6 flex flex-col flex-1">
         <div className="mb-4 flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4">
           <div>
             <h3 className="text-lg md:text-xl font-bold text-slate-900 group-hover:text-primary transition-colors">
@@ -65,7 +65,7 @@ export default function TiffinCard({ tiffin }: TiffinCardProps) {
           )}
         </div>
 
-        <div className="flex gap-2 md:gap-3">
+        <div className="flex gap-2 md:gap-3 mt-auto">
           <Link 
             href={`/food/${tiffin._id}`}
             className="flex-1 py-3 md:py-4 bg-slate-900 text-white rounded-xl md:rounded-2xl text-xs font-bold text-center transition-all hover:bg-slate-800 active:scale-95 shadow-xl shadow-slate-200"
