@@ -251,7 +251,7 @@ export default function DashboardPage() {
 
               <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory hide-scrollbar scroll-smooth items-stretch">
                 {nearbyProperties.slice(0, 3).map(property => (
-                  <div key={property._id} className="min-w-[85vw] md:min-w-[calc(33.333%-1rem)] snap-start flex-none">
+                  <div key={property._id} className="w-[85vw] sm:w-[320px] md:w-[calc(33.333%-1rem)] snap-start flex-none">
                     <PropertyCard property={property} />
                   </div>
                 ))}
@@ -274,10 +274,10 @@ export default function DashboardPage() {
 
               <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory hide-scrollbar scroll-smooth items-stretch">
                 {nearbyTiffins.slice(0, 3).map(tiffin => (
-                  <div key={tiffin._id} className="min-w-[85vw] md:min-w-[calc(33.333%-1rem)] snap-start flex-none">
+                  <div key={tiffin._id} className="w-[85vw] sm:w-[320px] md:w-[calc(33.333%-1rem)] snap-start flex-none">
                     <Link href={`/food/${tiffin._id}`} className="group block h-full">
                       <div className="card-modern overflow-hidden h-full flex flex-col">
-                        <div className="relative h-56 md:h-64 shrink-0 overflow-hidden rounded-[1.5rem] m-2">
+                        <div className="relative h-[220px] w-[calc(100%-1rem)] mx-auto mt-2 shrink-0 overflow-hidden rounded-[1.5rem]">
                           <img 
                             src={tiffin.images?.[0] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="%230f172a"/><circle cx="200" cy="120" r="45" fill="%23ff5a5f"/><text x="50%" y="82%" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-family="sans-serif" font-size="14" font-weight="bold">Homely Tiffin Service</text></svg>'} 
                             alt={tiffin.name} 
@@ -335,7 +335,7 @@ export default function DashboardPage() {
                 [1, 2, 3].map(i => <div key={i} className="min-w-[85vw] md:min-w-[calc(33.333%-1rem)] snap-start flex-none aspect-[1.5/1] rounded-[2rem] bg-slate-50 animate-pulse" />)
               ) : (
                 properties.slice(0, 3).map(property => (
-                  <div key={property._id} className="min-w-[85vw] md:min-w-[calc(33.333%-1rem)] snap-start flex-none">
+                  <div key={property._id} className="w-[85vw] sm:w-[320px] md:w-[calc(33.333%-1rem)] snap-start flex-none">
                     <PropertyCard property={property} />
                   </div>
                 ))
@@ -357,7 +357,7 @@ export default function DashboardPage() {
                 [1, 2, 3].map(i => <div key={i} className="min-w-[85vw] md:min-w-[calc(33.333%-1rem)] snap-start flex-none aspect-[1.5/1] rounded-[2rem] bg-slate-50 animate-pulse" />)
               ) : (
                 properties.slice(3, 6).map(property => (
-                  <div key={property._id} className="min-w-[85vw] md:min-w-[calc(33.333%-1rem)] snap-start flex-none">
+                  <div key={property._id} className="w-[85vw] sm:w-[320px] md:w-[calc(33.333%-1rem)] snap-start flex-none">
                     <PropertyCard property={property} />
                   </div>
                 ))

@@ -9,7 +9,7 @@ export default function PropertyCard({ property }: { property: Property }) {
     <Link href={`/property/${property._id}`} className="group block h-full">
       <div className="card-modern overflow-hidden h-full flex flex-col">
         {/* Image Container */}
-        <div className="relative h-56 md:h-64 shrink-0 overflow-hidden rounded-[1.5rem] m-2">
+        <div className="relative h-[220px] w-[calc(100%-1rem)] mx-auto mt-2 shrink-0 overflow-hidden rounded-[1.5rem]">
           <img 
             src={property.images?.[0] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="%2318181b"/><path d="M160 180h80v60h-80zM120 240h160v-90H120zM200 80l-90 70h180z" fill="%23ff5a5f"/><text x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="%23a1a1aa" font-family="sans-serif" font-size="14" font-weight="bold">No Image</text></svg>'} 
             alt={property.title}
