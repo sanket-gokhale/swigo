@@ -290,9 +290,9 @@ export default function DashboardPage() {
                           </div>
                         </div>
 
-                        <div className="p-6 pt-2 flex flex-col flex-1 overflow-hidden">
-                          <div className="flex justify-between items-start mb-2">
-                            <div className="w-full overflow-hidden">
+                        <div className="p-6 pt-2 flex flex-col flex-1 min-w-0">
+                          <div className="flex justify-between items-start mb-2 gap-3">
+                            <div className="min-w-0 flex-1">
                               <h3 className="text-xl font-extrabold text-white truncate">
                                 {tiffin.name}
                               </h3>

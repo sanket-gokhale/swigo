@@ -31,12 +31,12 @@ export default function PropertyCard({ property }: { property: Property }) {
         </div>
 
         {/* Content */}
-        <div className="p-6 pt-2 flex flex-col flex-1">
-          <div className="flex justify-between items-start mb-2">
-            <div>
-              <div className="flex items-center gap-1 mb-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                <p className="text-sm font-medium text-slate-400">{property.location}</p>
+        <div className="p-6 pt-2 flex flex-col flex-1 min-w-0">
+          <div className="flex justify-between items-start mb-2 gap-3">
+            <div className="min-w-0 flex-1">
+              <div className="flex items-center gap-1 mb-1 min-w-0">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 shrink-0"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                <p className="text-sm font-medium text-slate-400 truncate">{property.location}</p>
               </div>
               <h3 className="text-xl font-extrabold text-white truncate">
                 {property.title}
