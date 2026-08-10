@@ -274,17 +274,47 @@ export default function DashboardPage() {
 
               <div className="flex overflow-x-auto gap-6 pb-6 snap-x snap-mandatory hide-scrollbar scroll-smooth items-stretch">
                 {nearbyTiffins.slice(0, 3).map(tiffin => (
-                  <div key={tiffin._id} className="min-w-[85vw] md:min-w-[calc(33.333%-1rem)] snap-start flex-none card-modern overflow-hidden group rounded-2xl md:rounded-[2.5rem] h-full flex flex-col">
-                    <div className="aspect-[1.5/1] relative overflow-hidden shrink-0">
-                      <img src={tiffin.images?.[0] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="%230f172a"/><circle cx="200" cy="120" r="45" fill="%23ff5a5f"/><text x="50%" y="82%" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-family="sans-serif" font-size="14" font-weight="bold">Homely Tiffin Service</text></svg>'} alt={tiffin.name} className="w-full h-full object-cover transition-transform group-hover:scale-110" />
-                      <div className="absolute top-3 right-3 md:top-4 md:right-4 px-3 py-1 md:px-4 md:py-1 bg-white/90 backdrop-blur-md rounded-full text-[10px] md:text-xs font-black text-slate-900 shadow-xl">
-                        ₹{tiffin.price}/meal
+                  <div key={tiffin._id} className="min-w-[85vw] md:min-w-[calc(33.333%-1rem)] snap-start flex-none">
+                    <Link href={`/food/${tiffin._id}`} className="group block h-full">
+                      <div className="card-modern overflow-hidden h-full flex flex-col">
+                        <div className="relative h-56 md:h-64 shrink-0 overflow-hidden rounded-[1.5rem] m-2">
+                          <img 
+                            src={tiffin.images?.[0] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="%230f172a"/><circle cx="200" cy="120" r="45" fill="%23ff5a5f"/><text x="50%" y="82%" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-family="sans-serif" font-size="14" font-weight="bold">Homely Tiffin Service</text></svg>'} 
+                            alt={tiffin.name} 
+                            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          />
+                          <div className="absolute top-4 left-4 flex gap-2">
+                            <div className="bg-primary px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest text-white">
+                              Fresh Food
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="p-6 pt-2 flex flex-col flex-1 overflow-hidden">
+                          <div className="flex justify-between items-start mb-2">
+                            <div className="w-full overflow-hidden">
+                              <h3 className="text-xl font-extrabold text-white truncate">
+                                {tiffin.name}
+                              </h3>
+                              <p className="text-sm font-medium text-slate-400 mt-1 truncate">
+                                {tiffin.address || `${tiffin.area}, ${tiffin.city}`}
+                              </p>
+                            </div>
+                          </div>
+                          <p className="text-xs md:text-sm text-zinc-400 line-clamp-2 mt-2">{tiffin.description}</p>
+                          
+                          <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
+                            <div>
+                              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none mb-1">Starting at</p>
+                              <p className="text-2xl font-black text-white">₹{tiffin.price}</p>
+                            </div>
+                            <div className="h-12 w-12 bg-white/5 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                    <div className="p-4 md:p-6 flex flex-col flex-1">
-                      <h3 className="text-lg md:text-xl font-bold text-white mb-1.5 md:mb-2">{tiffin.name}</h3>
-                      <p className="text-xs md:text-sm text-zinc-400 line-clamp-2">{tiffin.description}</p>
-                    </div>
+                    </Link>
                   </div>
                 ))}
               </div>
