@@ -116,9 +116,39 @@ export const updateUser = async (req: Request, res: Response) => {
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+
+    // Explicitly delete related records to ensure no orphans in MongoDB
+    await prisma.tiffinInterest.deleteMany({ where: { userId: id } });
+    await prisma.bookingRequest.deleteMany({ where: { userId: id } });
+    await prisma.review.deleteMany({ where: { userId: id } });
+    await prisma.supportTicket.deleteMany({ where: { senderId: id } });
+    await prisma.message.deleteMany({
+      where: {
+        OR: [ { senderId: id }, { receiverId: id } ]
+      }
+    });
+    await prisma.collabRequest.deleteMany({
+      where: {
+        OR: [ { ownerId: id }, { providerId: id } ]
+      }
+    });
+    
+    // If the user is a tiffin provider, delete their tiffins
+    await prisma.tiffin.deleteMany({ where: { providerId: id } });
+    
+    // If the user is a property owner, delete their rooms and properties
+    const properties = await prisma.property.findMany({ where: { ownerId: id } });
+    const propertyIds = properties.map(p => p.id);
+    if (propertyIds.length > 0) {
+      await prisma.room.deleteMany({ where: { propertyId: { in: propertyIds } } });
+      await prisma.property.deleteMany({ where: { ownerId: id } });
+    }
+
+    // Finally delete the user
     await prisma.user.delete({ where: { id } });
-    sendResponse(res, 200, 'User deleted successfully');
+    sendResponse(res, 200, 'User and associated records deleted successfully');
   } catch (error: any) {
+    console.error('Error deleting user:', error);
     sendResponse(res, 400, error.message);
   }
 };

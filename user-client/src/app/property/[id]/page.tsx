@@ -331,6 +331,16 @@ export default function PropertyDetailPage() {
                       {[property.address, property.area, property.city, property.pincode].filter(Boolean).join(', ') || property.location}
                     </p>
                   </div>
+
+                  <div className="mb-8 p-5 rounded-2xl bg-primary/10 border-2 border-primary shadow-[0_0_20px_rgba(255,90,95,0.2)]">
+                    <p className="text-xs font-bold text-primary uppercase tracking-widest mb-2 flex items-center gap-2">
+                      <span className="text-lg">📞</span> Contact Details
+                    </p>
+                    <p className="text-xl font-black text-white tracking-wide">
+                      {property.contactNumber || 'Contact not provided'}
+                    </p>
+                    <p className="text-xs font-bold text-zinc-400 mt-2">Reach out directly to schedule a visit or ask questions.</p>
+                  </div>
                   
                   <div className="space-y-5 mb-10">
                     <div className="flex justify-between text-sm font-medium">

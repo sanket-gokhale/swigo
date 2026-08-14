@@ -107,6 +107,25 @@ export default function FoodRequestList() {
                     <span>₹{request.tiffin?.price}/mo</span>
                   </div>
                 </div>
+
+                <div className="mb-4 md:mb-6 space-y-3 p-3 md:p-4 rounded-xl md:rounded-2xl bg-zinc-50 border border-zinc-100">
+                  <div className="flex items-start gap-3">
+                    <span className="text-primary opacity-80 mt-0.5">📍</span>
+                    <div>
+                      <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-zinc-400 block mb-0.5">Address</span>
+                      <span className="text-xs md:text-sm font-medium text-zinc-600">
+                        {[request.tiffin?.address, request.tiffin?.area, request.tiffin?.city].filter(Boolean).join(', ') || 'Address not provided'}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-primary opacity-80 mt-0.5">📞</span>
+                    <div>
+                      <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest text-zinc-400 block mb-0.5">Contact Details</span>
+                      <span className="text-xs md:text-sm font-medium text-zinc-600">{request.tiffin?.contactNumber || 'Contact not provided'}</span>
+                    </div>
+                  </div>
+                </div>
                 
                 {request.message && (
                   <div className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-zinc-50 border border-zinc-100">

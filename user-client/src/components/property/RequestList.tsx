@@ -147,6 +147,25 @@ export default function RequestList() {
                     <span className="text-zinc-100">₹{request.property?.price || 0}/mo</span>
                   </div>
                 </div>
+
+                <div className="mb-6 space-y-3 p-4 rounded-2xl bg-white/5 border border-white/5">
+                  <div className="flex items-start gap-3">
+                    <span className="text-primary opacity-80 mt-0.5">📍</span>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block mb-0.5">Address</span>
+                      <span className="text-sm font-medium text-zinc-300">
+                        {[request.property?.address, request.property?.area, request.property?.city].filter(Boolean).join(', ') || request.property?.location || 'Address not provided'}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-primary opacity-80 mt-0.5">📞</span>
+                    <div>
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 block mb-0.5">Contact Details</span>
+                      <span className="text-sm font-medium text-zinc-300">{request.property?.contactNumber || 'Contact not provided'}</span>
+                    </div>
+                  </div>
+                </div>
                 
                 {request.message && (
                   <div className="p-4 rounded-2xl bg-white/5 border border-white/5">

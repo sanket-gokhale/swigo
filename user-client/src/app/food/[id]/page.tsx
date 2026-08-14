@@ -106,6 +106,16 @@ export default function TiffinDetailPage() {
                    <p className="text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight">₹{tiffin.price}<span className="text-base md:text-lg text-slate-500 font-bold">/mo</span></p>
                 </div>
 
+                <div className="p-4 md:p-5 rounded-2xl md:rounded-3xl bg-primary/20 border-2 border-primary/50 shadow-[0_0_20px_rgba(255,90,95,0.15)]">
+                  <p className="text-[10px] md:text-xs font-bold text-primary uppercase tracking-widest mb-1.5 md:mb-2 flex items-center gap-2">
+                    <span className="text-base md:text-lg">📞</span> Contact Details
+                  </p>
+                  <p className="text-lg md:text-xl font-black text-white tracking-wide">
+                    {tiffin.contactNumber || 'Contact not provided'}
+                  </p>
+                  <p className="text-[10px] md:text-xs font-medium text-slate-400 mt-2">Call directly for custom plans or dietary requests.</p>
+                </div>
+
                 <div className="space-y-3 md:space-y-4">
                    <p className="text-slate-400 font-bold text-xs uppercase tracking-wider">Choose a Plan</p>
                    {tiffin.mealPlans?.map((plan: any) => (
