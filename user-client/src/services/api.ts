@@ -25,10 +25,30 @@ const getApiBase = () => {
     return 'https://swigo.onrender.com/api';
   }
 
-  return 'http://127.0.0.1:5000/api';
+  return 'http://localhost:5000/api';
 };
 
 export const API_BASE = getApiBase();
+
+// In-Memory Fast Response Cache
+interface CacheEntry {
+  data: any;
+  timestamp: number;
+}
+const apiCache = new Map<string, CacheEntry>();
+const CACHE_TTL_MS = 60 * 1000; // 1 minute fresh cache
+
+export function clearApiCache(prefix?: string) {
+  if (!prefix) {
+    apiCache.clear();
+    return;
+  }
+  for (const key of apiCache.keys()) {
+    if (key.includes(prefix)) {
+      apiCache.delete(key);
+    }
+  }
+}
 
 export function handleAuthError(res: Response) {
   if (res.status === 401 && typeof window !== 'undefined') {
@@ -52,22 +72,70 @@ function getAuthHeaders(body?: any): HeadersInit {
   return headers;
 }
 
-export async function getJSON(path: string) {
-  const res = await fetch(`${API_BASE}${path}`);
-  if (!res.ok) throw new Error(`API error ${res.status}`);
-  return res.json();
+export async function getJSON(path: string, options: { useCache?: boolean; forceFresh?: boolean } = { useCache: true }) {
+  const cacheKey = path;
+  const now = Date.now();
+  
+  if (options.useCache !== false && !options.forceFresh) {
+    const cached = apiCache.get(cacheKey);
+    if (cached && now - cached.timestamp < CACHE_TTL_MS) {
+      return cached.data;
+    }
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}${path}`);
+    if (!res.ok) {
+      // If we have stale cache, return it on error rather than crashing
+      const cached = apiCache.get(cacheKey);
+      if (cached) return cached.data;
+      throw new Error(`API error ${res.status}`);
+    }
+    const data = await res.json();
+    
+    if (options.useCache !== false) {
+      apiCache.set(cacheKey, { data, timestamp: now });
+    }
+    return data;
+  } catch (err: any) {
+    const cached = apiCache.get(cacheKey);
+    if (cached) return cached.data;
+    throw err;
+  }
 }
 
-export async function getAuthJSON(path: string) {
-  const res = await fetch(`${API_BASE}${path}`, {
-    headers: getAuthHeaders()
-  });
-  handleAuthError(res);
-  if (!res.ok) throw new Error(`API error ${res.status}`);
-  return res.json();
+export async function getAuthJSON(path: string, options: { useCache?: boolean } = { useCache: true }) {
+  const cacheKey = `auth:${path}`;
+  const now = Date.now();
+  
+  if (options.useCache !== false) {
+    const cached = apiCache.get(cacheKey);
+    if (cached && now - cached.timestamp < CACHE_TTL_MS) {
+      return cached.data;
+    }
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}${path}`, {
+      headers: getAuthHeaders()
+    });
+    handleAuthError(res);
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+    const data = await res.json();
+
+    if (options.useCache !== false) {
+      apiCache.set(cacheKey, { data, timestamp: now });
+    }
+    return data;
+  } catch (err: any) {
+    const cached = apiCache.get(cacheKey);
+    if (cached) return cached.data;
+    throw err;
+  }
 }
 
 export async function postJSON(path: string, body: any) {
+  clearApiCache();
   const isFormData = body instanceof FormData;
   const headers: Record<string, string> = {};
   if (!isFormData) {
@@ -83,6 +151,7 @@ export async function postJSON(path: string, body: any) {
 }
 
 export async function postAuthJSON(path: string, body: any) {
+  clearApiCache();
   const isFormData = body instanceof FormData;
   const res = await fetch(`${API_BASE}${path}`, {
     method: 'POST',
@@ -95,6 +164,7 @@ export async function postAuthJSON(path: string, body: any) {
 }
 
 export async function putAuthJSON(path: string, body: any) {
+  clearApiCache();
   const isFormData = body instanceof FormData;
   const res = await fetch(`${API_BASE}${path}`, {
     method: 'PUT',
@@ -107,6 +177,7 @@ export async function putAuthJSON(path: string, body: any) {
 }
 
 export async function patchAuthJSON(path: string, body?: any) {
+  clearApiCache();
   const isFormData = body instanceof FormData;
   const res = await fetch(`${API_BASE}${path}`, {
     method: 'PATCH',
@@ -119,6 +190,7 @@ export async function patchAuthJSON(path: string, body?: any) {
 }
 
 export async function deleteAuthJSON(path: string) {
+  clearApiCache();
   const res = await fetch(`${API_BASE}${path}`, {
     method: 'DELETE',
     headers: getAuthHeaders()

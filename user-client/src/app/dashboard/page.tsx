@@ -66,14 +66,13 @@ const MobileListingCard = ({ item }: { item: any }) => {
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { location, loading: locLoading, requestLocation, setManualLocation } = useLocation();
+  const { location, loading: locLoading, requestLocation } = useLocation();
   const [properties, setProperties] = useState<Property[]>([]);
   const [nearbyProperties, setNearbyProperties] = useState<Property[]>([]);
   const [nearbyTiffins, setNearbyTiffins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearch = () => {
@@ -91,37 +90,25 @@ export default function DashboardPage() {
   }, []);
 
   const loadData = async (lat?: number, lng?: number) => {
+    setLoading(true);
     try {
-      const allPropsPromise = fetchProperties();
-      let nearbyPropsPromise: Promise<Property[]> = Promise.resolve([]);
-      let tiffinDataPromise;
-
-      if (lat && lng) {
-        nearbyPropsPromise = fetchProperties({ lat, lng, distance: 10000 });
-        tiffinDataPromise = getJSON(`/tiffins?lat=${lat}&lng=${lng}&distance=10000`);
-      } else {
-        tiffinDataPromise = getJSON('/tiffins');
-      }
-
-      const [allProps, nearby, tiffinData] = await Promise.all([
-        allPropsPromise,
-        nearbyPropsPromise,
-        tiffinDataPromise
+      const [allProps, nearbyProps, tiffinData] = await Promise.all([
+        fetchProperties().catch(() => []),
+        lat && lng ? fetchProperties({ lat, lng, distance: 10000 }).catch(() => []) : Promise.resolve([]),
+        (lat && lng 
+          ? getJSON(`/tiffins?lat=${lat}&lng=${lng}&distance=10000`).catch(() => getJSON('/tiffins').catch(() => ({ data: [] })))
+          : getJSON('/tiffins').catch(() => ({ data: [] }))
+        )
       ]);
 
-      setProperties(allProps);
-      if (lat && lng) {
-        setNearbyProperties(nearby);
-      }
+      const validProps = Array.isArray(allProps) ? allProps : [];
+      setProperties(validProps);
+      
+      const validNearby = Array.isArray(nearbyProps) && nearbyProps.length > 0 ? nearbyProps : validProps.slice(0, 6);
+      setNearbyProperties(validNearby);
 
       const list = Array.isArray(tiffinData?.data) ? tiffinData.data : (Array.isArray(tiffinData) ? tiffinData : []);
-      if (list.length === 0 && lat && lng) {
-        const fallback = await getJSON('/tiffins');
-        const fallbackList = Array.isArray(fallback?.data) ? fallback.data : (Array.isArray(fallback) ? fallback : []);
-        setNearbyTiffins(fallbackList);
-      } else {
-        setNearbyTiffins(list);
-      }
+      setNearbyTiffins(list);
     } catch (err) {
       console.error('Failed to load dashboard data', err);
     } finally {
@@ -134,43 +121,14 @@ export default function DashboardPage() {
   }, [location]);
 
   const categories = [
-    { name: 'Girls PG', icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855" /></svg>, color: 'text-pink-600', bg: 'bg-pink-100' },
-    { name: 'Boys PG', icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="10" r="3" /><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662" /></svg>, color: 'text-blue-600', bg: 'bg-blue-100' },
-    { name: 'Hostel', icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>, color: 'text-emerald-600', bg: 'bg-emerald-100' },
-    { name: 'Flats', icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18" /><path d="M9 8h1" /><path d="M9 12h1" /><path d="M9 16h1" /><path d="M14 8h1" /><path d="M14 12h1" /><path d="M14 16h1" /><path d="M5 21V3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5V21" /></svg>, color: 'text-orange-600', bg: 'bg-orange-100' },
-    { name: 'Tiffins', icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z" /><path d="M3 9V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4" /><path d="M12 12v6" /><path d="M8 12v3" /><path d="M16 12v3" /></svg>, color: 'text-purple-600', bg: 'bg-purple-100' },
+    { name: 'Girls PG', link: '/search?type=PG', icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 10m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" /><path d="M6.168 18.849a4 4 0 0 1 3.832 -2.849h4a4 4 0 0 1 3.834 2.855" /></svg>, color: 'text-pink-600', bg: 'bg-pink-100' },
+    { name: 'Boys PG', link: '/search?type=PG', icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="10" r="3" /><path d="M7 20.662V19a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v1.662" /></svg>, color: 'text-blue-600', bg: 'bg-blue-100' },
+    { name: 'Hostel', link: '/search?type=Hostel', icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>, color: 'text-emerald-600', bg: 'bg-emerald-100' },
+    { name: 'Flats', link: '/search?type=Flat', icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18" /><path d="M9 8h1" /><path d="M9 12h1" /><path d="M9 16h1" /><path d="M14 8h1" /><path d="M14 12h1" /><path d="M14 16h1" /><path d="M5 21V3.5a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 .5.5V21" /></svg>, color: 'text-orange-600', bg: 'bg-orange-100' },
+    { name: 'Tiffins', link: '/food', icon: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9h18v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9Z" /><path d="M3 9V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4" /><path d="M12 12v6" /><path d="M8 12v3" /><path d="M16 12v3" /></svg>, color: 'text-purple-600', bg: 'bg-purple-100' },
   ];
 
-  const popularCities = [
-    { name: 'Nagpur', lat: 21.1458, lng: 79.0882 },
-    { name: 'Mumbai', lat: 19.0760, lng: 72.8777 },
-    { name: 'Delhi', lat: 28.6139, lng: 77.2090 },
-    { name: 'Bengaluru', lat: 12.9716, lng: 77.5946 },
-    { name: 'Hyderabad', lat: 17.3850, lng: 78.4867 },
-    { name: 'Chennai', lat: 13.0827, lng: 80.2707 },
-    { name: 'Pune', lat: 18.5204, lng: 73.8567 },
-    { name: 'Kolkata', lat: 22.5726, lng: 88.3639 },
-    { name: 'Ahmedabad', lat: 23.0225, lng: 72.5714 },
-    { name: 'Nashik', lat: 19.9975, lng: 73.7898 },
-    { name: 'Aurangabad (Chhatrapati Sambhajinagar)', lat: 19.8762, lng: 75.3433 },
-    { name: 'Indore', lat: 22.7196, lng: 75.8577 },
-    { name: 'Bhopal', lat: 23.2599, lng: 77.4126 },
-    { name: 'Jaipur', lat: 26.9124, lng: 75.7873 },
-    { name: 'Lucknow', lat: 26.8467, lng: 80.9462 },
-    { name: 'Kanpur', lat: 26.4499, lng: 80.3319 },
-    { name: 'Surat', lat: 21.1702, lng: 72.8311 },
-    { name: 'Vadodara', lat: 22.3072, lng: 73.1812 },
-    { name: 'Rajkot', lat: 22.3039, lng: 70.8022 },
-    { name: 'Coimbatore', lat: 11.0168, lng: 76.9558 },
-    { name: 'Kochi', lat: 9.9312, lng: 76.2673 },
-    { name: 'Visakhapatnam', lat: 17.6868, lng: 83.2185 },
-    { name: 'Vijayawada', lat: 16.5062, lng: 80.6480 },
-    { name: 'Mysuru', lat: 12.2958, lng: 76.6394 },
-    { name: 'Chandigarh', lat: 30.7333, lng: 76.7794 },
-    { name: 'Bhubaneswar', lat: 20.2961, lng: 85.8245 },
-    { name: 'Patna', lat: 25.5941, lng: 85.1376 },
-    { name: 'Guwahati', lat: 26.1158, lng: 91.7086 }
-  ];
+
 
   if (!mounted) {
     return (
@@ -234,8 +192,8 @@ export default function DashboardPage() {
                 <div className="mt-8 hidden lg:flex items-center justify-between gap-x-2 sm:gap-x-4 lg:gap-x-6">
 
                   {/* Hostel */}
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#2563eb] text-white shadow-lg shadow-blue-500/30 sm:h-14 sm:w-14">
+                  <Link href="/search?type=Hostel" className="flex items-center gap-2 sm:gap-3 group hover:opacity-85 transition-opacity">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#2563eb] text-white shadow-lg shadow-blue-500/30 sm:h-14 sm:w-14 group-hover:scale-105 transition-transform">
                       <svg
                         viewBox="0 0 24 24"
                         fill="none"
@@ -253,21 +211,21 @@ export default function DashboardPage() {
                     </div>
 
                     <div className="whitespace-nowrap">
-                      <h4 className="text-sm font-extrabold text-[#07183d] sm:text-base">
+                      <h4 className="text-sm font-extrabold text-[#07183d] sm:text-base group-hover:text-blue-600 transition-colors">
                         Hostels
                       </h4>
                       <p className="text-[10px] font-medium text-slate-500 sm:text-xs mt-0.5">
                         Comfortable stays
                       </p>
                     </div>
-                  </div>
+                  </Link>
 
                   {/* Divider */}
                   <div className="hidden h-10 w-px bg-slate-300 sm:block" />
 
                   {/* PG */}
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#22a447] text-white shadow-lg shadow-green-500/30 sm:h-14 sm:w-14">
+                  <Link href="/search?type=PG" className="flex items-center gap-2 sm:gap-3 group hover:opacity-85 transition-opacity">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#22a447] text-white shadow-lg shadow-green-500/30 sm:h-14 sm:w-14 group-hover:scale-105 transition-transform">
                       <svg
                         viewBox="0 0 24 24"
                         fill="none"
@@ -283,21 +241,21 @@ export default function DashboardPage() {
                     </div>
 
                     <div className="whitespace-nowrap">
-                      <h4 className="text-sm font-extrabold text-[#07183d] sm:text-base">
+                      <h4 className="text-sm font-extrabold text-[#07183d] sm:text-base group-hover:text-green-600 transition-colors">
                         PG
                       </h4>
                       <p className="text-[10px] font-medium text-slate-500 sm:text-xs mt-0.5">
                         Safe & Affordable
                       </p>
                     </div>
-                  </div>
+                  </Link>
 
                   {/* Divider */}
                   <div className="hidden h-10 w-px bg-slate-300 sm:block" />
 
                   {/* Tiffin */}
-                  <div className="flex items-center gap-2 sm:gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f97316] text-white shadow-lg shadow-orange-500/30 sm:h-14 sm:w-14">
+                  <Link href="/food" className="flex items-center gap-2 sm:gap-3 group hover:opacity-85 transition-opacity">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f97316] text-white shadow-lg shadow-orange-500/30 sm:h-14 sm:w-14 group-hover:scale-105 transition-transform">
                       <svg
                         viewBox="0 0 24 24"
                         fill="none"
@@ -314,14 +272,14 @@ export default function DashboardPage() {
                     </div>
 
                     <div className="whitespace-nowrap">
-                      <h4 className="text-sm font-extrabold text-[#07183d] sm:text-base">
+                      <h4 className="text-sm font-extrabold text-[#07183d] sm:text-base group-hover:text-orange-600 transition-colors">
                         Tiffin Services
                       </h4>
                       <p className="text-[10px] font-medium text-slate-500 sm:text-xs mt-0.5">
                         Homely & Delicious
                       </p>
                     </div>
-                  </div>
+                  </Link>
 
                 </div>
 
@@ -342,9 +300,9 @@ export default function DashboardPage() {
 
                   <div className="flex h-full flex-col md:flex-row md:items-center">
 
-                    {/* Search input */}
-                    <div className="flex flex-1 items-center gap-3 px-3 py-2 md:py-0 lg:px-4">
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-[#2563eb]">
+                    {/* Search input + Mobile Search button */}
+                    <div className="flex flex-1 items-center gap-2 px-3 py-1.5 md:py-0 lg:px-4">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="shrink-0 text-[#2563eb]">
                         <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z" />
                         <circle cx="12" cy="10" r="3" />
                       </svg>
@@ -358,73 +316,58 @@ export default function DashboardPage() {
                         placeholder="Search by area, locality..."
                         className="w-full min-w-0 bg-transparent text-sm font-semibold text-[#07183d] outline-none placeholder:text-slate-400 sm:text-base"
                       />
-                    </div>
-
-                    <div className="flex items-center justify-between border-t border-slate-200/60 pt-2 mt-1 md:border-t-0 md:pt-0 md:mt-0 md:border-l md:border-slate-200">
-                      {/* Location */}
-                      <div className="relative flex-1 md:flex-none">
-                        <button
-                          onClick={() => setShowLocationDropdown(!showLocationDropdown)}
-                          type="button"
-                          className="flex w-full items-center justify-between gap-1 px-2 py-2 text-sm font-bold text-slate-600 transition-colors hover:text-[#2563eb] md:w-auto md:gap-2 md:px-4"
-                        >
-                          <div className="flex min-w-0 items-center gap-1 md:gap-2">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0 text-slate-400 hidden sm:block">
-                              <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z" />
-                              <circle cx="12" cy="10" r="3" />
-                            </svg>
-                            {location?.address ? (
-                              <span className="max-w-[140px] truncate text-[#2563eb]">
-                                {location.address.split(",")[0]}
-                              </span>
-                            ) : (
-                              <span>Location</span>
-                            )}
-                          </div>
-                          <span className="text-[10px] text-slate-400">▼</span>
-                        </button>
-
-                        {showLocationDropdown && (
-                          <div className="absolute left-0 md:left-auto md:right-0 top-full z-50 mt-2 w-full min-w-[200px] rounded-2xl border border-slate-100 bg-white p-2 shadow-2xl md:w-56">
-                            <button
-                              onClick={() => {
-                                requestLocation();
-                                setShowLocationDropdown(false);
-                              }}
-                              className="w-full rounded-xl px-3 py-2.5 text-left text-xs font-bold text-slate-700 hover:bg-slate-50"
-                            >
-                              📍 GPS / Current Location
-                            </button>
-                            <div className="my-1 h-px bg-slate-100" />
-                            <div className="max-h-[250px] overflow-y-auto">
-                              {popularCities.map((city) => (
-                                <button
-                                  key={city.name}
-                                  onClick={() => {
-                                    setManualLocation(city.name, city.lat, city.lng);
-                                    setShowLocationDropdown(false);
-                                  }}
-                                  className="w-full rounded-xl px-3 py-2.5 text-left text-xs font-semibold text-slate-600 hover:bg-blue-50 hover:text-blue-600"
-                                >
-                                  🌇 {city.name}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Search button */}
+                      {/* Search button in top row on small devices */}
                       <button
                         type="button"
                         onClick={handleSearch}
-                        className="ml-2 flex h-10 w-10 md:h-12 md:w-12 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 font-bold text-white shadow-md shadow-blue-500/20 transition-all hover:scale-105 hover:shadow-lg hover:shadow-blue-500/30 md:ml-0 md:h-full md:w-auto md:rounded-xl md:px-8"
+                        className="flex md:hidden h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 font-bold text-white shadow-md shadow-blue-500/25 active:scale-95 transition-all"
+                        aria-label="Search"
                       >
-                        <span className="hidden md:inline">Search</span>
-                        <svg className="h-4 w-4 md:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                        <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                           <circle cx="11" cy="11" r="8" />
                           <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-4.3-4.3" />
                         </svg>
+                      </button>
+                    </div>
+
+                    {/* Location option (Use Current Location only) */}
+                    <div className="flex items-center justify-between border-t border-slate-200/60 pt-1.5 md:border-t-0 md:pt-0 md:border-l md:border-slate-200">
+                      {/* Location Button */}
+                      <div className="w-full md:w-auto">
+                        <button
+                          onClick={requestLocation}
+                          type="button"
+                          className="flex w-full items-center justify-between md:justify-start gap-2 px-3 py-2 rounded-xl bg-blue-50/80 hover:bg-blue-100/80 md:bg-transparent text-xs sm:text-sm font-bold text-[#2563eb] transition-all active:scale-[0.99] md:w-auto md:px-4"
+                          title="Use current location"
+                        >
+                          <div className="flex min-w-0 items-center gap-2">
+                            {locLoading ? (
+                              <div className="h-4 w-4 border-2 border-blue-600 border-t-transparent animate-spin rounded-full shrink-0" />
+                            ) : (
+                              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="shrink-0 text-blue-600">
+                                <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z" />
+                                <circle cx="12" cy="10" r="3" />
+                              </svg>
+                            )}
+                            <span className="truncate max-w-[220px] md:max-w-[150px]">
+                              {locLoading ? "Locating..." : (location?.address ? location.address.split(",")[0] : "Use Current Location")}
+                            </span>
+                          </div>
+                          {!locLoading && (
+                            <span className="text-[10px] font-bold text-blue-600 bg-blue-100/90 px-2 py-0.5 rounded-full shrink-0">
+                              {location?.address ? "Refresh" : "GPS"}
+                            </span>
+                          )}
+                        </button>
+                      </div>
+
+                      {/* Desktop Search button */}
+                      <button
+                        type="button"
+                        onClick={handleSearch}
+                        className="hidden md:flex h-full shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-8 font-bold text-white shadow-md shadow-blue-500/20 transition-all hover:scale-105 hover:shadow-lg hover:shadow-blue-500/30"
+                      >
+                        <span>Search</span>
                       </button>
                     </div>
 
@@ -434,7 +377,7 @@ export default function DashboardPage() {
                 {/* Mobile Service Cards (lg:hidden) */}
                 <div className="mt-5 grid grid-cols-3 gap-3 lg:hidden">
                   {/* Hostel Card */}
-                  <div className="aspect-[4/5] rounded-[20px] border border-slate-100/60 bg-white/70 backdrop-blur-md p-2 text-center shadow-[0_8px_20px_rgb(0,0,0,0.04)] flex flex-col items-center justify-center hover:-translate-y-1 transition-transform">
+                  <Link href="/search?type=Hostel" className="aspect-[4/5] rounded-[20px] border border-slate-100/60 bg-white/70 backdrop-blur-md p-2 text-center shadow-[0_8px_20px_rgb(0,0,0,0.04)] flex flex-col items-center justify-center hover:-translate-y-1 transition-transform active:scale-95 block">
                     <div className="mb-2 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-600">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
                         <path d="M2 4v16" />
@@ -451,10 +394,10 @@ export default function DashboardPage() {
                         <path d="m12 5 7 7-7 7" />
                       </svg>
                     </div>
-                  </div>
+                  </Link>
 
                   {/* PG Card */}
-                  <div className="aspect-[4/5] rounded-[20px] border border-slate-100/60 bg-white/70 backdrop-blur-md p-2 text-center shadow-[0_8px_20px_rgb(0,0,0,0.04)] flex flex-col items-center justify-center hover:-translate-y-1 transition-transform">
+                  <Link href="/search?type=PG" className="aspect-[4/5] rounded-[20px] border border-slate-100/60 bg-white/70 backdrop-blur-md p-2 text-center shadow-[0_8px_20px_rgb(0,0,0,0.04)] flex flex-col items-center justify-center hover:-translate-y-1 transition-transform active:scale-95 block">
                     <div className="mb-2 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-green-50 text-green-600">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
                         <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -469,10 +412,10 @@ export default function DashboardPage() {
                         <path d="m12 5 7 7-7 7" />
                       </svg>
                     </div>
-                  </div>
+                  </Link>
 
                   {/* Tiffin Card */}
-                  <div className="aspect-[4/5] rounded-[20px] border border-slate-100/60 bg-white/70 backdrop-blur-md p-2 text-center shadow-[0_8px_20px_rgb(0,0,0,0.04)] flex flex-col items-center justify-center hover:-translate-y-1 transition-transform">
+                  <Link href="/food" className="aspect-[4/5] rounded-[20px] border border-slate-100/60 bg-white/70 backdrop-blur-md p-2 text-center shadow-[0_8px_20px_rgb(0,0,0,0.04)] flex flex-col items-center justify-center hover:-translate-y-1 transition-transform active:scale-95 block">
                     <div className="mb-2 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-orange-50 text-orange-600">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
                         <path d="M12 3a9 9 0 0 0-9 9h18a9 9 0 0 0-9-9z" />
@@ -488,7 +431,7 @@ export default function DashboardPage() {
                         <path d="m12 5 7 7-7 7" />
                       </svg>
                     </div>
-                  </div>
+                  </Link>
                 </div>
 
                 {/* Mobile Trust Section (lg:hidden) */}
@@ -553,7 +496,7 @@ export default function DashboardPage() {
               <div className="relative hidden h-[400px] w-full sm:h-[500px] lg:block lg:h-[570px]">
 
                 {/* Hostel Card */}
-                <div className="absolute left-[0%] top-[12%] z-10 w-[150px] rotate-[-5deg] rounded-[25px] border-2 border-white/80 bg-white/60 backdrop-blur-md p-2 shadow-2xl transition-all duration-500 hover:z-50 hover:rotate-0 hover:scale-110 hover:shadow-[0_20px_50px_rgb(0,0,0,0.15)] sm:left-[3%] sm:w-[210px] lg:left-[0%] lg:w-[280px]">
+                <Link href="/search?type=Hostel" className="absolute left-[0%] top-[12%] z-10 w-[150px] rotate-[-5deg] rounded-[25px] border-2 border-white/80 bg-white/60 backdrop-blur-md p-2 shadow-2xl transition-all duration-500 hover:z-50 hover:rotate-0 hover:scale-110 hover:shadow-[0_20px_50px_rgb(0,0,0,0.15)] sm:left-[3%] sm:w-[210px] lg:left-[0%] lg:w-[280px] block">
 
                   <div className="flex flex-col items-center">
 
@@ -591,10 +534,10 @@ export default function DashboardPage() {
                     </div>
 
                   </div>
-                </div>
+                </Link>
 
                 {/* PG Card */}
-                <div className="absolute left-[30%] top-[3%] z-20 w-[165px] rotate-[2deg] rounded-[25px] border-2 border-white/80 bg-white/60 backdrop-blur-md p-2 shadow-2xl transition-all duration-500 hover:z-50 hover:rotate-0 hover:scale-110 hover:shadow-[0_20px_50px_rgb(0,0,0,0.15)] sm:left-[32%] sm:w-[230px] lg:left-[32%] lg:w-[310px]">
+                <Link href="/search?type=PG" className="absolute left-[30%] top-[3%] z-20 w-[165px] rotate-[2deg] rounded-[25px] border-2 border-white/80 bg-white/60 backdrop-blur-md p-2 shadow-2xl transition-all duration-500 hover:z-50 hover:rotate-0 hover:scale-110 hover:shadow-[0_20px_50px_rgb(0,0,0,0.15)] sm:left-[32%] sm:w-[230px] lg:left-[32%] lg:w-[310px] block">
 
                   <div className="flex flex-col items-center">
 
@@ -630,10 +573,10 @@ export default function DashboardPage() {
                     </div>
 
                   </div>
-                </div>
+                </Link>
 
                 {/* Tiffin Card */}
-                <div className="absolute right-[0%] top-[15%] z-30 w-[150px] rotate-[7deg] rounded-[25px] border-2 border-white/80 bg-orange-50/60 backdrop-blur-md p-2 shadow-2xl transition-all duration-500 hover:z-50 hover:rotate-0 hover:scale-110 hover:shadow-[0_20px_50px_rgb(0,0,0,0.15)] sm:right-[2%] sm:w-[210px] lg:right-[-2%] lg:w-[280px]">
+                <Link href="/food" className="absolute right-[0%] top-[15%] z-30 w-[150px] rotate-[7deg] rounded-[25px] border-2 border-white/80 bg-orange-50/60 backdrop-blur-md p-2 shadow-2xl transition-all duration-500 hover:z-50 hover:rotate-0 hover:scale-110 hover:shadow-[0_20px_50px_rgb(0,0,0,0.15)] sm:right-[2%] sm:w-[210px] lg:right-[-2%] lg:w-[280px] block">
 
                   <div className="flex flex-col items-center">
 
@@ -670,7 +613,7 @@ export default function DashboardPage() {
                     </div>
 
                   </div>
-                </div>
+                </Link>
 
               </div>
 
@@ -684,7 +627,7 @@ export default function DashboardPage() {
             {categories.map((cat) => (
               <Link
                 key={cat.name}
-                href={`/search?type=${cat.name}`}
+                href={cat.link || `/search?type=${cat.name}`}
                 className="group bg-white/60 backdrop-blur-md border border-slate-200/60 rounded-3xl p-6 flex flex-col items-center justify-center gap-4 hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1.5 hover:bg-white transition-all duration-300"
               >
                 <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${cat.bg} ${cat.color} group-hover:scale-110 transition-transform duration-300`}>
@@ -768,40 +711,44 @@ export default function DashboardPage() {
                 {nearbyTiffins.slice(0, 3).map(tiffin => (
                   <div key={tiffin._id} className="w-[85vw] sm:w-[320px] md:w-[calc(33.333%-1rem)] snap-start flex-none">
                     <Link href={`/food/${tiffin._id}`} className="group block h-full">
-                      <div className="card-modern overflow-hidden h-full flex flex-col">
-                        <div className="relative h-[220px] w-[calc(100%-1rem)] mx-auto mt-2 shrink-0 overflow-hidden rounded-[1.5rem]">
+                      <div className="rounded-3xl border border-slate-200/80 bg-white overflow-hidden shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 h-full flex flex-col">
+                        <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-slate-100">
                           <img 
-                            src={tiffin.images?.[0] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="%230f172a"/><circle cx="200" cy="120" r="45" fill="%23ff5a5f"/><text x="50%" y="82%" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-family="sans-serif" font-size="14" font-weight="bold">Homely Tiffin Service</text></svg>'} 
+                            src={tiffin.images?.[0] || '/tifin.jpeg'} 
                             alt={tiffin.name} 
-                            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                           />
-                          <div className="absolute top-4 left-4 flex gap-2">
-                            <div className="bg-primary px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest text-white">
+                          <div className="absolute top-3 left-3 flex gap-1.5">
+                            <div className="bg-orange-50 text-orange-600 border border-orange-100 px-2.5 py-1 rounded-full text-[10px] font-bold backdrop-blur-md">
                               Fresh Food
                             </div>
                           </div>
+                          <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-xl text-white text-xs font-bold shadow-md">
+                            ₹{tiffin.price}<span className="text-[10px] font-normal text-slate-200">/mo</span>
+                          </div>
                         </div>
 
-                        <div className="p-6 pt-2 flex flex-col flex-1 min-w-0">
-                          <div className="flex justify-between items-start mb-2 gap-3">
-                            <div className="min-w-0 flex-1">
-                              <h3 className="text-xl font-extrabold text-white truncate">
-                                {tiffin.name}
-                              </h3>
-                              <p className="text-sm font-medium text-slate-400 mt-1 truncate">
-                                {tiffin.address || `${tiffin.area}, ${tiffin.city}`}
-                              </p>
-                            </div>
+                        <div className="p-4 sm:p-5 flex flex-col flex-1 min-w-0 justify-between">
+                          <div>
+                            <h3 className="text-base sm:text-lg font-extrabold text-slate-900 group-hover:text-orange-600 transition-colors line-clamp-1">
+                              {tiffin.name}
+                            </h3>
+                            <p className="text-xs text-slate-400 mt-1 truncate">
+                              {tiffin.address || `${tiffin.area || ''}, ${tiffin.city || ''}`}
+                            </p>
+                            <p className="text-xs text-slate-600 line-clamp-2 mt-2 font-normal leading-relaxed">
+                              {tiffin.description || 'Nutritious homestyle meals prepared daily.'}
+                            </p>
                           </div>
-                          <p className="text-xs md:text-sm text-zinc-400 line-clamp-2 mt-2">{tiffin.description}</p>
                           
-                          <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
+                          <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
                             <div>
-                              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none mb-1">Starting at</p>
-                              <p className="text-2xl font-black text-white">₹{tiffin.price}</p>
+                              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Starting at</p>
+                              <p className="text-lg font-black text-slate-900">₹{tiffin.price}</p>
                             </div>
-                            <div className="h-12 w-12 bg-white/5 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            <div className="flex items-center gap-1 text-xs font-bold text-orange-600 group-hover:translate-x-0.5 transition-transform">
+                              <span>View Menu</span>
+                              <span>→</span>
                             </div>
                           </div>
                         </div>

@@ -5,73 +5,76 @@ import Link from 'next/link';
 import { Property } from '../../types/property';
 
 export default function PropertyCard({ property }: { property: Property }) {
+  const propertyImage = property.images?.[0] || '/hostel.jpeg';
+  const typeBadgeColors: Record<string, string> = {
+    Hostel: 'bg-blue-50 text-blue-600 border-blue-100',
+    PG: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+    Flat: 'bg-orange-50 text-orange-600 border-orange-100',
+    Room: 'bg-purple-50 text-purple-600 border-purple-100',
+    Homestay: 'bg-indigo-50 text-indigo-600 border-indigo-100',
+  };
+  const badgeClass = typeBadgeColors[property.type] || 'bg-blue-50 text-blue-600 border-blue-100';
+
   return (
     <Link href={`/property/${property._id}`} className="group block h-full">
-      <div className="card-modern overflow-hidden h-full flex flex-col">
+      <div className="rounded-3xl border border-slate-200/80 bg-white overflow-hidden shadow-[0_4px_20px_rgb(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 flex flex-col h-full">
         {/* Image Container */}
-        <div className="relative h-[220px] w-[calc(100%-1rem)] mx-auto mt-2 shrink-0 overflow-hidden rounded-[1.5rem]">
+        <div className="relative aspect-[16/10] w-full shrink-0 overflow-hidden bg-slate-100">
           <img 
-            src={property.images?.[0] || 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300"><rect width="400" height="300" fill="%2318181b"/><path d="M160 180h80v60h-80zM120 240h160v-90H120zM200 80l-90 70h180z" fill="%23ff5a5f"/><text x="50%" y="85%" dominant-baseline="middle" text-anchor="middle" fill="%23a1a1aa" font-family="sans-serif" font-size="14" font-weight="bold">No Image</text></svg>'} 
+            src={propertyImage} 
             alt={property.title}
-            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+            className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
-          <div className="absolute top-4 left-4 flex gap-2">
-            {property.genderPreference === 'Girls' && (
-              <div className="bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest text-secondary">
-                Girls Only
+          <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
+            <div className={`px-2.5 py-1 rounded-full text-[10px] font-bold border backdrop-blur-md ${badgeClass}`}>
+              {property.type}
+            </div>
+            {property.genderPreference && (
+              <div className="bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-bold text-slate-700 shadow-sm border border-slate-100">
+                {property.genderPreference}
               </div>
             )}
-            <div className="bg-primary px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-widest text-white">
-              Verified
-            </div>
           </div>
-          <button className="absolute top-4 right-4 h-10 w-10 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-slate-400 hover:text-secondary transition-all">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-          </button>
+          <div className="absolute bottom-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-xl text-white text-xs font-bold shadow-md">
+            ₹{property.price?.toLocaleString() || 0}<span className="text-[10px] font-normal text-slate-200">/mo</span>
+          </div>
         </div>
 
         {/* Content */}
-        <div className="p-6 pt-2 flex flex-col flex-1 min-w-0">
-          <div className="flex justify-between items-start mb-2 gap-3">
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-1 mb-1 min-w-0">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-400 shrink-0"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                <p className="text-sm font-medium text-slate-400 truncate">{property.location}</p>
+        <div className="p-4 sm:p-5 flex flex-col flex-1 min-w-0 justify-between">
+          <div>
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <div className="flex items-center gap-1 text-slate-500 text-xs font-medium truncate">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-blue-600 shrink-0">
+                  <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span className="truncate">{property.location || property.city || 'Nagpur'}</span>
               </div>
-              <h3 className="text-xl font-extrabold text-white truncate">
-                {property.title}
-              </h3>
-              {property.address && (
-                <p className="text-sm font-medium text-slate-400 mt-1 truncate">
-                  {property.address}
-                </p>
-              )}
-              {property.rooms && property.rooms.length > 0 && (() => {
-                const totalRooms = property.rooms.length;
-                const availableRooms = property.rooms.filter((r: any) => r.availability === 'Available').length;
-                return (
-                  <div className="mt-2.5 flex items-center gap-1.5 bg-white/5 border border-white/5 rounded-xl px-2.5 py-1 w-fit">
-                    <span className={`h-1.5 w-1.5 rounded-full ${availableRooms > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`} />
-                    <p className={`text-[10px] font-black uppercase tracking-wider ${availableRooms > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                      {availableRooms > 0 ? `${availableRooms} of ${totalRooms} Rooms Avail` : 'Fully Booked'}
-                    </p>
-                  </div>
-                );
-              })()}
+              <div className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-amber-50 text-amber-700 border border-amber-100 text-xs font-bold shrink-0">
+                <span>⭐</span>
+                <span>{property.averageRating ? property.averageRating.toFixed(1) : '4.8'}</span>
+              </div>
             </div>
-            <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-white/5 rounded-xl text-primary border border-white/10">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" className="text-primary"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-              <span className="text-sm font-black">{property.averageRating || '4.8'}</span>
-            </div>
+
+            <h3 className="text-base sm:text-lg font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1">
+              {property.title}
+            </h3>
+
+            {property.address && (
+              <p className="text-xs text-slate-400 mt-1 truncate">
+                {[property.address, property.area].filter(Boolean).join(', ')}
+              </p>
+            )}
           </div>
           
-          <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
-            <div>
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-none mb-1">Starting at</p>
-              <p className="text-2xl font-black text-white">₹{property.price.toLocaleString()}</p>
+          <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+            <div className="text-xs font-bold text-slate-500">
+              <span>{property.electricityBill === 'Paid' ? '⚡ Electricity included' : '⚡ Metered power'}</span>
             </div>
-            <div className="h-12 w-12 bg-white/5 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all shadow-sm">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <div className="flex items-center gap-1 text-xs font-bold text-blue-600 group-hover:translate-x-0.5 transition-transform">
+              <span>Details</span>
+              <span>→</span>
             </div>
           </div>
         </div>
@@ -80,3 +83,4 @@ export default function PropertyCard({ property }: { property: Property }) {
     </Link>
   );
 }
+
