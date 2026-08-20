@@ -93,7 +93,7 @@ export default function DashboardPage() {
   const loadData = async (lat?: number, lng?: number) => {
     try {
       const allPropsPromise = fetchProperties();
-      let nearbyPropsPromise = Promise.resolve([]);
+      let nearbyPropsPromise: Promise<Property[]> = Promise.resolve([]);
       let tiffinDataPromise;
 
       if (lat && lng) {
