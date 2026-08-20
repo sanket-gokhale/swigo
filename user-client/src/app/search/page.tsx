@@ -34,7 +34,7 @@ function SearchPageContent() {
           'Surat', 'Vadodara', 'Rajkot', 'Coimbatore', 'Kochi', 'Visakhapatnam', 'Vijayawada', 'Mysuru',
           'Chandigarh', 'Bhubaneswar', 'Patna', 'Guwahati'
         ];
-        const sortedCities = [...cityData].sort((a, b) => {
+        const sortedCities = Array.from(new Set(cityData)).sort((a, b) => {
           const indexA = preferredOrder.indexOf(a);
           const indexB = preferredOrder.indexOf(b);
           if (indexA !== -1 && indexB !== -1) return indexA - indexB;
