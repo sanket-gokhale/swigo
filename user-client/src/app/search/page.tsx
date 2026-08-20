@@ -236,8 +236,7 @@ function SearchPageContent() {
                     setPendingSearch('');
                     setPendingCity('');
                     setPendingType('All');
-                    setPendingRating(0);
-                    handleFetch('', 'All', 0, '');
+                    handleFetch('', 'All', '');
                   }} 
                   className="mt-4 px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 active:scale-95 transition-all"
                 >
